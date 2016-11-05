@@ -2,6 +2,16 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+
+// load mongoose package
+var mongoose = require('mongoose');
+// Use native Node promises
+mongoose.Promise = global.Promise;
+// connect to MongoDB
+mongoose.connect('mongodb://localhost/flower-exchange')
+  .then(() =>  console.log('connection succesful'))
+  .catch((err) => console.error(err));
+
 module.exports = app; // for testing
 
 var config = {
@@ -17,8 +27,6 @@ var config = {
     }
   }
 };
-
-
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (err) { throw err; }
