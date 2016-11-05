@@ -1,16 +1,42 @@
 # FlowerExchange
 A restful api for all floral shops big and small facilitating order taking and making.
 
-
-To get started:
-
-git clone 
-npm install -g swagger
-cd flower-exchange
+Owner: https://github.com/dalogics/FlowerExchange
 
 
+
+## Getting started
+```
+> git clone https://github.com/dalogics/FlowerExchange.git
+> npm install -g swagger
+> cd fFlowerExchange
+```
+
+## Editor
 To run editor: 
-Editor: swagger project edit
+```
+> swagger project edit
+```
 
+
+## Run
 To run the webAPI:
-RUN:  swagger project start flower-exchange
+```
+> swagger project start flower-exchange
+```
+
+## Built With
+* [nodeJs](https://nodejs.org) - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine
+* [Swagger](http://swagger.io/) - World's Most Popular Framework for APIs - Open webAPI standards
+* [npm](https://www.npmjs.com/) - Node.js Package manager & dependency Management
+
+
+## Authors
+
+* **David Aebersold** - *Initial work* - [DALogics](https://github.com/DALogics)
+
+See also the list of [contributors](https://github.com/dalogics/FlowerExchange/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
