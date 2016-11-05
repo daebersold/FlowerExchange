@@ -1,0 +1,304 @@
+swagger: "2.0"
+info:
+  description: |
+    This is a webApi designed to facilitate the order exchange that takes place
+    between small and large flowershops. It is commong for flower shops to
+    have a customer that wants to send flowers to another person located far
+    away and physical delivery of goods from the originating flowers shops is not
+    possible. There are many floral tranmission delivery services which exist and
+    are not open and charge exorbinant amounts of fees. This webAPI is designed
+    to level the playing field, reduce costs, and improve customer experience.
+    Integrating with this webAPI will not address all edge cases that may arise, 
+    but it will serve to address the most major and important use cases that
+    are needed to provide great services to your customer.
+
+    [Learn about FlowerExchange](http://flowers-flowers.com) or join the Facebook Page 'flower-exchange'.
+
+    For this sample, you can use the api key `1234` to test the authorization filters
+  contact:
+    name: apiteam@swagger.io
+  license:
+    name: CC
+    url: www.flowers-flowers.com/license.html
+  version: "0.0.1"
+  title: Flower Exchange
+  termsOfService: http://flowers-flowers.com/terms/
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /account:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: account
+    get:
+      tags:
+        - account
+      description: Returns account detail the caller
+      # used as the method name of the controller
+      operationId: account
+      parameters:
+        - name: accountId
+          in: query
+          description: The accountId assigned to your flower shop operates.
+          required: true
+          type: number
+        - name: secretKey
+          in: query
+          description: The secret key for your assigned flower shop.
+          required: true
+          type: number
+      # responses may fall through to errors
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
+  /account/create:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: accountCreate
+    post:
+      tags:
+        - account
+      description: Returns account detail the caller
+      # used as the method name of the controller
+      operationId: accountCreate
+      parameters:
+        - name: name
+          in: formData
+          description: The name of your flower shop operates.
+          required: true
+          type: string
+        - name: address
+          in: formData
+          description: The street address of your flower shop.
+          required: true
+          type: string
+        - name: city
+          in: formData
+          description: The city of your flower shop.
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
+  /orders:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: orders
+    get:
+      tags:
+        - orders
+      description: Returns list of 'Orders' to the caller
+      # used as the method name of the controller
+      operationId: orders
+      parameters:
+        - name: zipCode
+          in: query
+          description: The zip code in which your flower shop operates.
+          required: true
+          type: string
+        - name: radius
+          in: query
+          description: The number of miles in radius in which your flower shop is willing to deliver.
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/OrdersResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+ 
+  /order:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: order
+    get:
+      tags:
+        - orders
+      description: Returns the details of a specific 'Order' to the caller
+      # used as the method name of the controller
+      operationId: order
+      parameters:
+        - name: orderId
+          in: query
+          description: The orderId of the order in which details are requested
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/OrderResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /order/create:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: orderCreate
+    post:
+      tags:
+        - orders
+      description: Creates an 'Order'
+      # used as the method name of the controller
+      operationId: orderCreate
+      parameters:
+        - name: order
+          in: body
+          description: Order object that needs to be added to the marketplace
+          required: false
+          schema:
+            $ref: "#/definitions/Order"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/OrderResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
+  /swagger:
+    x-swagger-pipe: swagger_raw
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+  flowerexchange_auth:
+    type: oauth2
+    authorizationUrl: http://flowerexchange.com/api/oauth/dialog
+    flow: implicit
+    scopes:
+      write_account: modify your account details
+      read_account: read your account details
+# complex objects have schema definitions
+definitions:
+  AccountResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  OrdersResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  OrderResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  Order:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      originatingAccountId:
+        type: integer
+        format: int64
+      fullfillmentAccountId:
+        type: integer
+        format: int64
+      toFirstName:
+        type: string
+      toLastName:
+        type: string
+      toAddress1:
+        type: string
+      toAddress2:
+        type: string
+      toCity:
+        type: string
+      toState:
+        type: string
+      toZipCode:
+        type: number
+      toHomePhone:
+        type: string
+      toMobilePhone:
+        type: string
+      toEmail:
+        type: string
+      fromFirstName:
+        type: string
+      fromLastName:
+        type: string
+      fromAddress1:
+        type: string
+      fromAddress2:
+        type: string
+      fromCity:
+        type: string
+      fromState:
+        type: string
+      fromZipCode:
+        type: number
+      fromHomePhone:
+        type: string
+      fromMobilePhone:
+        type: string
+      fromEmail:
+        type: string
+      orderStatus:
+        type: integer
+        format: int32
+        description: Order Status
