@@ -24,6 +24,10 @@ var OrderSchema = new mongoose.Schema({
   fromMobilePhone: String,
   fromEmail: String,
   orderStatus: Number,
+  toGeoCode: Object,
+  toLoc: Object,
+  fromGeoCode: Object,
+  fromLoc: Object,
   dateCreated: { type: Date, default: Date.now },
   dateModified: { type: Date, default: Date.now },
 });

@@ -1,12 +1,12 @@
 'use strict';
-
+var q = require('q');
 var util = require('util');
 // load mongoose package
 var mongoose = require('mongoose');
 var Order = require('../models/Order.js');
 
-var getCoords = function(){
-
+var getCoords = function(req){
+  var deferred = q.defer();
   var NodeGeocoder = require('node-geocoder');
   
   var options = {
@@ -20,36 +20,76 @@ var getCoords = function(){
   
   var geocoder = NodeGeocoder(options);
   
-  // Using callback 
-  geocoder.geocode('2808 Sandalwood Dr. New Albany, IN 47150').then(function(res) {
-    console.log(res);
+  var toAddress1 = req.body.toAddress1 || "";
+  var toAddress2 = req.body.toAddress2 || "";
+  var toCity = req.body.toCity || "";
+  var toState = req.body.toState || "";
+  var toZipCode = req.body.toZipCode || "";
+  var addressToGeoCode = toAddress1 + " " + toAddress2 + " " + toCity + " " + toState + " " + toZipCode;
+
+ 
+  var fromAddress1 = req.body.fromAddress1 || "";
+  var fromAddress2 = req.body.fromAddress2 || "";
+  var fromCity = req.body.fromCity || "";
+  var fromState = req.body.fromState || "";
+  var fromZipCode = req.body.fromZipCode || "";
+  var addressFromGeoCode = fromAddress1 + " " + fromAddress2 + " " + fromCity + " " + fromState + " " + fromZipCode;
+
+  geocoder.geocode(addressToGeoCode).then(
+    function(toGeoCodedResult) {
+    // Success!
+    console.log(toGeoCodedResult);
+    geocoder.geocode(addressFromGeoCode).then(
+      function(fromGeoCodedResult) {
+        // Success!
+        console.log(fromGeoCodedResult);
+        var result = {};
+        result.toGeoCode = toGeoCodedResult;
+        result.fromGeoCode = fromGeoCodedResult;
+        deferred.resolve(result);
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
   })
   .catch(function(err) {
     console.log(err);
   });
+  return deferred.promise;
 };
 
 function orderCreate(req, res) {
   
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
   var orderBody = req.body || 'no order given';
-  var orderDetail = util.format('Order: %j!', orderBody);
-  var orderToInsert = new Order(orderBody);
-  console.log("orderToInsert", orderToInsert);
-  getCoords();
-  
+  var orderDetail = util.format('OrderCreate reqBody: %j!', orderBody);
+  console.log("orderCreate", orderDetail);
   // Create a order in memory
-  var order = new Order(orderToInsert);
-  
-  // Save it to database
-  order.save(function(err){
-    if(err) {
-      console.log(err);
-      res.json({stuff:err});
-    } else {
-      console.log(orderToInsert);
-      res.json(orderToInsert.toString());
-    }
+  var orderToInsert = new Order(orderBody);
+    
+  getCoords(req).then(
+    function(geoCodeResult){
+      console.log('OrderCreate.GeoCodeResult: ',geoCodeResult);
+      orderToInsert.toGeoCode = geoCodeResult.toGeoCode;
+      orderToInsert.fromGeoCode = geoCodeResult.fromGeoCode;
+      orderToInsert.toLoc = { type: 'Point', coordinates: [ geoCodeResult.toGeoCode[0].longitude, geoCodeResult.toGeoCode[0].latitude ] };
+      orderToInsert.fromLoc = { type: 'Point', coordinates: [ geoCodeResult.fromGeoCode[0].longitude, geoCodeResult.fromGeoCode[0].latitude ] };
+
+
+      // Remember to create the indexes required.
+      // db.orders.createIndex( { toLoc : "2dsphere" } )
+      // db.orders.createIndex( { fromLoc : "2dsphere" } )
+      
+      // Save it to database
+      orderToInsert.save(function(err){
+        if(err) {
+          console.log(err);
+          //res.json({stuff:err});
+        } else {
+          console.log(orderToInsert);
+          res.json(orderToInsert.toString());
+        }
+      });
   });
 
   // this sends back a JSON response which is a single string
