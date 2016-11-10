@@ -42,7 +42,6 @@ function orders(req, res) {
   var ordersListing = util.format('Orders: %s!', zipCode);
 
   // get Coordinates of Zip Code
-
   getCoords(zipCode).then(
     function(geoCodedResult){
       console.log('OrderCreate.GeoCodeResult: ',geoCodedResult);
@@ -53,8 +52,6 @@ function orders(req, res) {
       // db.orders.createIndex( { fromLoc : "2dsphere" } )
       
       // Look it up!
-
-      //var query = { toLoc: { '$near': { '$maxDistance': 1, '$geometry': { type: 'Point', coordinates: [ 10, -20 ] } } } }";
       var query = { toLoc : { $near : { $geometry : { type : 'Point', coordinates : lookupCoords }, $maxDistance : radius  } } };
 
       console.log("Executing Query: ",query);
@@ -65,7 +62,4 @@ function orders(req, res) {
         res.json(ordersList);
       });
   });
-
-  // this sends back a JSON response which is a single string
-  //res.json(ordersListing);
 }

@@ -246,6 +246,26 @@ definitions:
     properties:
       message:
         type: string
+  OrderDetails:
+    type: object
+    properties:
+      itemNumber:
+        type: string
+        description: Item Number
+      itemName: 
+        type: string
+        description: Name of the item
+      itemDescription:
+        type: string
+        description: Item description
+      itemCost: 
+        type: number
+        format: float
+      itemSimilarSubstitutionOk:
+        type: boolean
+      itemMaxCost: 
+        type: number
+        format: float
   Order:
     type: object
     properties:
@@ -298,7 +318,30 @@ definitions:
         type: string
       fromEmail:
         type: string
+        description: Email address from the sender
+      orderDetails:
+        type: array
+        items:
+          $ref: '#/definitions/OrderDetails'
+      orderTotal:
+        type: number
+        format: float
+      orderTotalNotToExceed: 
+        type: number
+        format: float
+      deliveryDate:
+        type: string
+        format: date
+      timedDelivery:
+        type: boolean
+      deliveryTime:
+        type: string
+        format: date-time
+      expirationDate:
+        type: string
+        format: date
       orderStatus:
         type: integer
         format: int32
         description: Order Status
+ 

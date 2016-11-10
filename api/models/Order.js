@@ -28,6 +28,20 @@ var OrderSchema = new mongoose.Schema({
   toLoc: Object,
   fromGeoCode: Object,
   fromLoc: Object,
+  orderDetails:[{
+    itemNumber: String,
+    itemName: String,
+    itemDescription: String,
+    itemCost: Number,
+    itemSimilarSubstitutionOk: Boolean,
+    itemMaxCost: Number
+  }],
+  orderTotal: Number,
+  orderTotalNotToExceed: Number,
+  deliveryDate: { type: Date, default: Date.now },
+  timedDelivery: Boolean,
+  deliveryTime: { type: Date, default: Date.now },
+  expirationDate: { type: Date, default: Date.now },
   dateCreated: { type: Date, default: Date.now },
   dateModified: { type: Date, default: Date.now },
 });
