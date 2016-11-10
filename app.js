@@ -49,4 +49,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (swaggerExpress.runner.swagger.paths['/order/create']) {
     console.log('try this:\ncurl http://127.0.0.1:' + port + '/order/create');
   }
+  if (swaggerExpress.runner.swagger.paths['/order/accept']) {
+    console.log('try this:\ncurl http://127.0.0.1:' + port + '/order/accept');
+  }
 });

@@ -206,6 +206,37 @@ paths:
         - flowerexchange_auth:
           - write_account
           - read_account
+  /order/accept:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: orderAccept
+    get:
+      tags:
+        - orders
+      description: Accepts an 'Order'
+      # used as the method name of the controller
+      operationId: orderAccept
+      parameters:
+        - name: orderId
+          in: query
+          description: The orderId of the order in which details accepted
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/OrderResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
   /swagger:
     x-swagger-pipe: swagger_raw
 securityDefinitions:
