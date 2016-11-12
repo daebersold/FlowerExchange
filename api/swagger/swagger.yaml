@@ -16,7 +16,7 @@ info:
 
     For this sample, you can use the api key `1234` to test the authorization filters
   contact:
-    name: davidaebersold+FlowerExchange@google.com
+    name: davidaebersold+FlowerExchange@gmail.com
   license:
     name: CC
     url: www.flowers-flowers.com/license.html
@@ -76,30 +76,22 @@ paths:
           - write_account
           - read_account
   /account/create:
-    # binds a127 app logic to a route
     x-swagger-router-controller: accountCreate
     post:
       tags:
         - account
-      description: Returns account detail the caller
-      # used as the method name of the controller
+      description: Creates a new account
       operationId: accountCreate
+      produces:
+        - application/json
+        - application/xml
       parameters:
-        - name: name
-          in: formData
-          description: The name of your flower shop operates.
-          required: true
-          type: string
-        - name: address
-          in: formData
-          description: The street address of your flower shop.
-          required: true
-          type: string
-        - name: city
-          in: formData
-          description: The city of your flower shop.
-          required: true
-          type: string
+        - name: account
+          in: body
+          description: Account object
+          required: false
+          schema:
+            $ref: "#/definitions/Account"
       responses:
         "200":
           description: Success
@@ -375,4 +367,54 @@ definitions:
         type: integer
         format: int32
         description: Order Status
- 
+  Account:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name on account
+        title: Name
+      address1:
+        type: string
+        description: Address1 of account holder
+        title: Address 1
+      address2:
+        type: string
+        description: Address2 of account holder
+        title: Address 2
+      city:
+        type: string
+        description: City
+        title: City
+      state:
+        type: string
+        description: State
+        title: State
+      zip:
+        type: string
+        description: Zip code
+        title: Zip Code
+      contactEmail:
+        type: string
+        description: Email address to associate to the account
+        title: E-Mail Address
+      contactPhone:
+        type: string
+        description: Phone number
+        title: Phone Number
+      autoAcceptIfMoreThan:
+        type: number
+        description: If the amount of the order total is above this amount, auto accept.
+        title: Auto Accept If More Than
+      autoRejectIfLessThan:
+        type: number
+        description: If the amount of the order is less than this amount, auto reject.
+        title: Auto Reject If Less Than
+      MinimumOrderAmount:
+        type: number
+        description: Set a minmum order amount
+        title: Minimum Order Amount
+      autoRejectIfLessThan1:
+        type: number
+        description: DefaultMileRadiusForAutoAcceptReject
+        title: Default Mile Radius for Automatic Accept or Reject Settings
