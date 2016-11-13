@@ -3,6 +3,8 @@
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 
+var Account = require('./api/models/Account.js')
+
 // load mongoose package
 var mongoose = require('mongoose');
 // Use native Node promises
@@ -19,10 +21,34 @@ var config = {
   swaggerSecurityHandlers: {
     api_key: function (req, authOrSecDef, scopesOrApiKey, callback) {
       // your security code
-      if ('1234' === scopesOrApiKey) {
-        callback(null);
-      } else {
+      // Look it up!
+      var apiKey = req.headers["api_key"];
+      if (!apiKey) {
+        apiKey = url.parse(req.url,true).query["api_key"];
+      }
+
+      //console.log("req.api_key",req.headers);
+      //console.log('A scope key1: ',req.swagger);
+      //console.log('A scope key2: ',scopesOrApiKey);
+      if (scopesOrApiKey === undefined ){
+        // If api key is not supplied, then deny
         callback(new Error('access denied!'));
+      } else {
+        var query = { token: scopesOrApiKey };
+
+        /* Verify token exists with particular account. */
+        Account.find(query, function (err, accountList) {
+          // If not, return forbidden.
+          if (err || accountList === null || accountList.length === 0){
+            return callback(new Error('Access denied!'));
+          }
+          // If we found it, let's get the account List for futher usage.
+          console.log("Found these accounts:", accountList);
+          
+          req.account = accountList[0];
+          // Allow continuation - token is good
+          callback(null);
+        });
       }
     }
   }

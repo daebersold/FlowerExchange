@@ -40,11 +40,13 @@ function orders(req, res) {
   var zipCode = req.swagger.params.zipCode.value || 'no zip given';
   var radius = (req.swagger.params.radius.value || 30 ) * 1609.34; // If no radius is given, then default to 30 miles.
   var ordersListing = util.format('Orders: %s!', zipCode);
+  var accountDetail = req.account;
+  zipCode = accountDetail.zip;
 
   // get Coordinates of Zip Code
   getCoords(zipCode).then(
     function(geoCodedResult){
-      console.log('OrderCreate.GeoCodeResult: ',geoCodedResult);
+      console.log('Orders.GeoCodeResult: ',geoCodedResult);
       var lookupCoords =  [ geoCodedResult[0].longitude, geoCodedResult[0].latitude ];
       
       // Remember to create the indexes required.
@@ -53,7 +55,7 @@ function orders(req, res) {
       
       // Look it up!
       var query = { toLoc : { $near : { $geometry : { type : 'Point', coordinates : lookupCoords }, $maxDistance : radius  } } };
-
+      
       console.log("Executing Query: ",query);
       /* GET /orders listing. */
       Order.find(query, function (err, ordersList) {

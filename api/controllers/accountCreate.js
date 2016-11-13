@@ -1,11 +1,12 @@
 'use strict';
 var Account = require('../models/Account.js');
 var util = require('util');
+var idgen = require('idgen');
+var uuid = require('node-uuid');
 
 module.exports = {
   accountCreate: accountCreate
 };
-
 
 function accountCreate(req, res) {
 
@@ -15,6 +16,9 @@ function accountCreate(req, res) {
   console.log("accountCreate", accountDetail);
   // Create a order in memory
   var accountToInsert = new Account(accountBody);
+
+  //accountToInsert.token = uuid.v4();
+  accountToInsert.token = idgen(8);
 
   // Save it to database
   accountToInsert.save(function(err){

@@ -65,7 +65,7 @@ paths:
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/AccountResponse"
+            $ref: "#/definitions/Account"
         default:
           description: Error
           schema:
@@ -139,7 +139,11 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
- 
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
   /order:
     # binds a127 app logic to a route
     x-swagger-router-controller: order

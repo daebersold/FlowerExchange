@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
+
 var AccountSchema = new mongoose.Schema({
+    token: String,
     name: String,
     address1: String,
     address2: String,
