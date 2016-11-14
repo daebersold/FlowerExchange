@@ -36,12 +36,29 @@ var getCoords = function(zipCode){
 };
 
 function orders(req, res) {
+
+
+  // Reqlize that req.account gets set in app when token is verified and account is retrieved.
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var zipCode = req.swagger.params.zipCode.value || 'no zip given';
-  var radius = (req.swagger.params.radius.value || 30 ) * 1609.34; // If no radius is given, then default to 30 miles.
-  var ordersListing = util.format('Orders: %s!', zipCode);
-  var accountDetail = req.account;
-  zipCode = accountDetail.zip;
+  var zipCode = "47150";
+  if ( req.swagger.params.zipCode.value ){
+    zipCode = req.swagger.params.zipCode.value;
+  } else {
+    zipCode = req.account.zip;
+  }
+
+  //'no zip given';
+  // If no radius is given, then default to 30 miles.
+  var radius = 30;
+  if ( req.swagger.params.radius.value ){
+    radius = req.swagger.params.radius.value;
+  } else {
+    radius = req.account.defaultMileRadiusForAutoAcceptReject;
+  }
+  var radius = radius * 1609.34; 
+
+  console.log("zipCode: ",zipCode);
+  console.log("radius: ",radius);
 
   // get Coordinates of Zip Code
   getCoords(zipCode).then(
@@ -59,7 +76,7 @@ function orders(req, res) {
       console.log("Executing Query: ",query);
       /* GET /orders listing. */
       Order.find(query, function (err, ordersList) {
-        if (err) return next(err);
+        if (err) return console.log(err);
         console.log("Found these orders:", ordersList);
         res.json(ordersList);
       });

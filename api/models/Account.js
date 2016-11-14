@@ -13,8 +13,8 @@ var AccountSchema = new mongoose.Schema({
     description: Number,
     autoAcceptIfMoreThan: Number,
     autoRejectIfLessThan: Number,
-    MinimumOrderAmount: Number,
-    autoRejectIfLessThan1: Number,
+    minimumOrderAmount: Number,
+    defaultMileRadiusForAutoAcceptReject: Number,
     dateCreated: { type: Date, default: Date.now },
     dateModified: { type: Date, default: Date.now }
 });

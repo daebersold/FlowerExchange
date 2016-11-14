@@ -121,12 +121,12 @@ paths:
         - name: zipCode
           in: query
           description: The zip code in which your flower shop operates.
-          required: true
+          required: false
           type: string
         - name: radius
           in: query
           description: The number of miles in radius in which your flower shop is willing to deliver.
-          required: true
+          required: false
           type: number
       responses:
         "200":
@@ -414,11 +414,11 @@ definitions:
         type: number
         description: If the amount of the order is less than this amount, auto reject.
         title: Auto Reject If Less Than
-      MinimumOrderAmount:
+      minimumOrderAmount:
         type: number
         description: Set a minmum order amount
         title: Minimum Order Amount
-      autoRejectIfLessThan1:
+      defaultMileRadiusForAutoAcceptReject:
         type: number
         description: DefaultMileRadiusForAutoAcceptReject
         title: Default Mile Radius for Automatic Accept or Reject Settings
