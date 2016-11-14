@@ -1,22 +1,26 @@
 'use strict';
 var q = require('q');
 var util = require('util');
-// load mongoose package
 var mongoose = require('mongoose');
 var Order = require('../models/Order.js');
+var Account = require('../models/Account.js');
+var Global = require("../../globals.js");
+
+console.log("global:", Global);
 
 var getCoords = function(req){
   var deferred = q.defer();
   var NodeGeocoder = require('node-geocoder');
   
-  var options = {
-    provider: 'google',
+  // var options = {
+  //   provider: 'google',
   
-    // Optional depending on the providers 
-    httpAdapter: 'https', // Default 
-    apiKey: 'AIzaSyDUnhPZJjoED_bQQ3tyUJ7pXXk6Z9GW-e8', // for Mapquest, OpenCage, Google Premier 
-    formatter: null         // 'gpx', 'string', ... 
-  };
+  //   // Optional depending on the providers 
+  //   httpAdapter: 'https', // Default 
+  //   apiKey: 'AIzaSyCSnHoaN7NnFdr-SLSg4vSBGlXeO2MGJ9M', // for Mapquest, OpenCage, Google Premier 
+  //   formatter: null         // 'gpx', 'string', ... 
+  // };
+  var options = Global.options;
   
   var geocoder = NodeGeocoder(options);
   
@@ -58,6 +62,38 @@ var getCoords = function(req){
   return deferred.promise;
 };
 
+// AutoAccept will go through all orders and apply rules
+// 
+var AutoAccept = function(orderToInsert) {
+  console.log("Checking auto acceptance rules");
+  Account.find({}, function (err, accountsList){
+    if ( err){
+      console.log("error",err);
+    }
+    for( var x=0; x < accountsList.length; x++){
+      console.log('Checking on rules for account: ', accountsList[x]);
+      if (accountsList[x].geoCode) {
+
+      
+        var lookupCoords = [ accountsList[x].geoCode[0].longitude, accountsList[x].geoCode[0].latitude ];
+        var radius = accountsList[x].defaultMileRadiusForAutoAcceptReject;
+
+        // Look orders that might be candidates for auto-acceptance for this account!
+        var orderQuery = { toLoc : { $near : { $geometry : { type : 'Point', coordinates : lookupCoords }, $maxDistance : radius  } }, 
+      orderStatus: 1 };
+
+        console.log("Executing Query: ",orderQuery);
+        /* GET /orders listing. */
+        Order.find(orderQuery, function (err, ordersList) {
+          if (err) return console.log(err);
+          console.log("Found these orders:", ordersList);
+        });
+      }
+    }
+  });
+};
+
+
 function orderCreate(req, res) {
   
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
@@ -87,6 +123,7 @@ function orderCreate(req, res) {
           //res.json({stuff:err});
         } else {
           console.log(orderToInsert);
+          AutoAccept(orderToInsert);
           res.json(orderToInsert.toString());
         }
       });
