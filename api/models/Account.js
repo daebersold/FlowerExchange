@@ -12,6 +12,7 @@ var AccountSchema = new mongoose.Schema({
     contactPhone: String,
     description: String,
     geoCode: Object,
+    loc: Object,
     autoAcceptIfMoreThan: Number,
     autoRejectIfLessThan: Number,
     minimumOrderAmount: Number,

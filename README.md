@@ -9,7 +9,7 @@ Owner: https://github.com/dalogics/FlowerExchange
 ```
 > git clone https://github.com/dalogics/FlowerExchange.git
 > npm install -g swagger
-> cd fFlowerExchange
+> cd FlowerExchange
 ```
 
 ## Editor

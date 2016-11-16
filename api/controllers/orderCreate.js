@@ -65,34 +65,34 @@ var getCoords = function(req){
 // AutoAccept will go through all orders and apply rules
 // 
 var AutoAccept = function(orderToInsert) {
-  console.log("Checking auto acceptance rules");
-  Account.find({}, function (err, accountsList){
+  // Brute force... go through all accounts.
+  // for each account, look at open orders.
+  // rule match
+  // next account.
+  console.log("Checking auto acceptance rules", orderToInsert.fromAddress1);
+  var accountQuery =  {}; //{ loc : { $near : { $geometry : { type : 'Point', coordinates : orderToInsert.toLoc.coordinates}, $maxDistance: { $val: 'defaultMileRadiusForAutoAcceptReject'} }, orderStatus: 1 };
+  Account.find(accountQuery, function (err, accountsList){
     if ( err){
       console.log("error",err);
     }
     for( var x=0; x < accountsList.length; x++){
-      console.log('Checking on rules for account: ', accountsList[x]);
-      if (accountsList[x].geoCode) {
 
-      
-        var lookupCoords = [ accountsList[x].geoCode[0].longitude, accountsList[x].geoCode[0].latitude ];
-        var radius = accountsList[x].defaultMileRadiusForAutoAcceptReject;
+      if (accountsList[x].loc) {
+      console.log('Checking on rules for account: ', accountsList[x].token);
 
-        // Look orders that might be candidates for auto-acceptance for this account!
-        var orderQuery = { toLoc : { $near : { $geometry : { type : 'Point', coordinates : lookupCoords }, $maxDistance : radius  } }, 
-      orderStatus: 1 };
-
-        console.log("Executing Query: ",orderQuery);
-        /* GET /orders listing. */
-        Order.find(orderQuery, function (err, ordersList) {
-          if (err) return console.log(err);
-          console.log("Found these orders:", ordersList);
+        var orderQuery =  { toLoc : { $near : { $geometry : { type : 'Point', coordinates : accountsList[x].loc.coordinates}, $maxDistance: accountsList[x].defaultMileRadiusForAutoAcceptReject } }, orderStatus: 1 };
+        console.log("Order Query: ", JSON.stringify(orderQuery));
+        Order.find(orderQuery, function( err, ordersList){
+          if ( ordersList ){
+            for( var y=0; y < ordersList.length; y++){
+              console.log("Matched: ",accountsList[x].token, " with ", ordersList[0]._id);
+            }
+          }
         });
       }
     }
   });
 };
-
 
 function orderCreate(req, res) {
   
@@ -115,7 +115,7 @@ function orderCreate(req, res) {
       // Remember to create the indexes required.
       // db.orders.createIndex( { toLoc : "2dsphere" } )
       // db.orders.createIndex( { fromLoc : "2dsphere" } )
-      
+
       // Save it to database
       orderToInsert.save(function(err){
         if(err) {

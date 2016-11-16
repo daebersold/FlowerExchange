@@ -45,10 +45,14 @@ function accountCreate(req, res) {
   // Create a order in memory
   var accountToInsert = new Account(accountBody);
 
+  // Remember to create the indexes required.
+  // db.accounts.createIndex( { loc : "2dsphere" } )
+  
   getCoords(req).then(
     function(geoCodeResult){
       console.log('AccountCreate.GeoCodeResult: ',geoCodeResult);
       accountToInsert.geoCode = geoCodeResult;
+      accountToInsert.loc = { type: 'Point', coordinates: [ geoCodeResult[0].longitude, geoCodeResult[0].latitude ] };
 
       //accountToInsert.token = uuid.v4();
       accountToInsert.token = idgen(8);

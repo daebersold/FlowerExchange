@@ -27,6 +27,9 @@ var config = {
         apiKey = url.parse(req.url,true).query["api_key"];
       }
 
+      // ****
+      // Security Check section
+      // ****
       //console.log("req.api_key",req.headers);
       //console.log('A scope key1: ',req.swagger);
       //console.log('A scope key2: ',scopesOrApiKey);
@@ -50,6 +53,11 @@ var config = {
           callback(null);
         });
       }
+      
+      // To insert the admin record, comment this line in.
+      //callback(null);
+      // Once inserted comment the line above out. and comment in the section above.
+
     }
   }
 };
