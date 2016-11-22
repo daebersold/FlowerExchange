@@ -18,10 +18,17 @@ To run editor:
 > swagger project edit
 ```
 
-
 ## Run
+To setup Database:
+Ensure Mongo is installed.
+```
+> cd FlowerExchange
+> mongo < insertAdmin.js
+```
+
 To run the webAPI:
 ```
+> npm install
 > swagger project start flower-exchange
 ```
 
