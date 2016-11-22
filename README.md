@@ -28,6 +28,7 @@ Ensure Mongo is installed.
 
 To run the webAPI:
 ```
+> cd FlowerExchange
 > npm install
 > swagger project start flower-exchange
 ```
