@@ -42,6 +42,7 @@ To run the webAPI:
 ## Authors
 
 * **David Aebersold** - *Initial work* - [DALogics](https://github.com/DALogics)
+* **Brian Randall** -
 
 See also the list of [contributors](https://github.com/dalogics/FlowerExchange/contributors) who participated in this project.
 
