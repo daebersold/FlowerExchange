@@ -6,7 +6,7 @@ logs
 *.log
 
 #Globals
-globals.js
+#globals.js
 
 # Runtime data
 pids
