@@ -1,4 +1,4 @@
-# FlowerExchange
+﻿# FlowerExchange
 A restful api for all floral shops big and small facilitating order taking and making.
 
 Owner: https://github.com/dalogics/FlowerExchange
@@ -42,7 +42,7 @@ To run the webAPI:
 ## Authors
 
 * **David Aebersold** - *Initial work* - [DALogics](https://github.com/DALogics)
-* **Brian Randall** -
+* **Brian Randall** - *Additional functionality*
 
 See also the list of [contributors](https://github.com/dalogics/FlowerExchange/contributors) who participated in this project.
 
