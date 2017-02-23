@@ -55,7 +55,7 @@ function orders(req, res) {
     } else {
         radius = req.account.defaultMileRadiusForAutoAcceptReject;
     }
-    var radius = radius * 1609.34;
+    radius = radius * 1609.34;
 
     console.log("zipCode: ", zipCode);
     console.log("radius: ", radius);

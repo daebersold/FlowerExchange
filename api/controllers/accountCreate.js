@@ -70,7 +70,7 @@ function accountCreate(req, res) {
             });
         }
     );
-};
+}
 
 module.exports = {
     accountCreate: accountCreate
