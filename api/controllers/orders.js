@@ -3,6 +3,7 @@ var q = require('q');
 var util = require('util');
 var mongoose = require('mongoose');
 var Order = require('../models/Order.js');
+var NodeGeocoder = require('node-geocoder');
 
 module.exports = {
     orders: orders
@@ -10,8 +11,6 @@ module.exports = {
 
 var getCoords = function(zipCode) {
     var deferred = q.defer();
-    var NodeGeocoder = require('node-geocoder');
-
     var options = {
         provider: 'google',
 
