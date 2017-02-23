@@ -75,6 +75,37 @@ paths:
         - flowerexchange_auth:
           - write_account
           - read_account
+  /accounts:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: accounts
+    get:
+      tags:
+        - accounts
+      description: Returns accounts list the caller
+      # used as the method name of the controller
+      operationId: accounts
+      parameters:
+        - name: secretKey
+          in: query
+          description: The secret key for your assigned flower shop.
+          required: true
+          type: number
+      # responses may fall through to errors
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountsResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
   /account/create:
     x-swagger-router-controller: accountCreate
     post:
@@ -86,6 +117,44 @@ paths:
         - application/json
         - application/xml
       parameters:
+        - name: account
+          in: body
+          description: Account object
+          required: false
+          schema:
+            $ref: "#/definitions/Account"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
+  /account/update/{id}:
+    x-swagger-router-controller: accountUpdate
+    put:
+      tags:
+        - account
+      description: Updates an existing account
+      operationId: accountUpdate
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: id
+          description: Account id
+          type: string
+          in: path
+          required: true
         - name: account
           in: body
           description: Account object
@@ -250,6 +319,12 @@ securityDefinitions:
 # complex objects have schema definitions
 definitions:
   AccountResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  AccountsResponse:
     required:
       - message
     properties:
