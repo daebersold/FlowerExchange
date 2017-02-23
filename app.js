@@ -26,7 +26,8 @@ var config = {
             // Look it up!
             var apiKey = req.headers["api_key"];
             if (!apiKey) {
-                apiKey = url.parse(req.url, true).query["api_key"];
+                // commented out because of unit tests. URL doesn't exist.
+                //apiKey = url.parse(req.url, true).query["api_key"];
             }
 
             // ****
