@@ -3,7 +3,11 @@ A restful api for all floral shops big and small facilitating order taking and m
 
 Owner: https://github.com/dalogics/FlowerExchange
 
+## Badges
+https://inch-ci.org/github/daebersold/FlowerExchange.svg?branch=master
 
+[![Code Climate](https://lima.codeclimate.com/github/daebersold/FlowerExchange/badges/gpa.svg)](https://lima.codeclimate.com/github/daebersold/FlowerExchange)
+[![Issue Count](https://lima.codeclimate.com/github/daebersold/FlowerExchange/badges/issue_count.svg)](https://lima.codeclimate.com/github/daebersold/FlowerExchange)
 
 ## Getting started
 ```
