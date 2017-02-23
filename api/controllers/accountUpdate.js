@@ -101,7 +101,7 @@ function accountUpdate(req, res) {
             });
         }
     );
-};
+}
 
 module.exports = {
     accountUpdate: accountUpdate

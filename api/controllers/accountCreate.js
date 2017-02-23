@@ -5,11 +5,11 @@ var idgen = require('idgen');
 var uuid = require('node-uuid');
 var q = require('q');
 var Global = require("../../globals.js");
-
+var NodeGeocoder = require('node-geocoder');
 
 var getCoords = function(req) {
     var deferred = q.defer();
-    var NodeGeocoder = require('node-geocoder');
+
 
     var options = Global.options;
 

@@ -74,19 +74,19 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
     var port = process.env.PORT || 10010;
     app.listen(port);
 
-    if (swaggerExpress.runner.swagger.paths['/orders']) {
-        console.log('try this:\ncurl http://127.0.0.1:' + port + '/orders?zipCode=47150&radius=50');
-    }
-    if (swaggerExpress.runner.swagger.paths['/order']) {
-        console.log('try this:\ncurl http://127.0.0.1:' + port + '/order?orderId=10492939');
-    }
-    if (swaggerExpress.runner.swagger.paths['/account']) {
-        console.log('try this:\ncurl http://127.0.0.1:' + port + '/account?accountId=124');
-    }
-    if (swaggerExpress.runner.swagger.paths['/order/create']) {
-        console.log('try this:\ncurl http://127.0.0.1:' + port + '/order/create');
-    }
-    if (swaggerExpress.runner.swagger.paths['/order/accept']) {
-        console.log('try this:\ncurl http://127.0.0.1:' + port + '/order/accept');
-    }
+    // if (swaggerExpress.runner.swagger.paths['/orders']) {
+    //     console.log('try this:\ncurl http://127.0.0.1:' + port + '/orders?zipCode=47150&radius=50');
+    // }
+    // if (swaggerExpress.runner.swagger.paths['/order']) {
+    //     console.log('try this:\ncurl http://127.0.0.1:' + port + '/order?orderId=10492939');
+    // }
+    // if (swaggerExpress.runner.swagger.paths['/account']) {
+    //     console.log('try this:\ncurl http://127.0.0.1:' + port + '/account?accountId=124');
+    // }
+    // if (swaggerExpress.runner.swagger.paths['/order/create']) {
+    //     console.log('try this:\ncurl http://127.0.0.1:' + port + '/order/create');
+    // }
+    // if (swaggerExpress.runner.swagger.paths['/order/accept']) {
+    //     console.log('try this:\ncurl http://127.0.0.1:' + port + '/order/accept');
+    // }
 });
