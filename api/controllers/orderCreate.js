@@ -46,7 +46,7 @@ var getCoords = function(req) {
                 geocoder.geocode(addressFromGeoCode).then(
                         function(fromGeoCodedResult) {
                             // Success!
-                            console.log(fromGeoCodedResult);
+                            //console.log(fromGeoCodedResult);
                             var result = {};
                             result.toGeoCode = toGeoCodedResult;
                             result.fromGeoCode = fromGeoCodedResult;
@@ -69,7 +69,7 @@ var AutoAccept = function(orderToInsert) {
     // for each account, look at open orders.
     // rule match
     // next account.
-    console.log("Checking auto acceptance rules", orderToInsert.fromAddress1);
+    //console.log("Checking auto acceptance rules", orderToInsert.fromAddress1);
     var accountQuery = {}; //{ loc : { $near : { $geometry : { type : 'Point', coordinates : orderToInsert.toLoc.coordinates}, $maxDistance: { $val: 'defaultMileRadiusForAutoAcceptReject'} }, orderStatus: 1 };
     Account.find(accountQuery, function(err, accountsList) {
         if (err) {
@@ -78,14 +78,14 @@ var AutoAccept = function(orderToInsert) {
         for (var x = 0; x < accountsList.length; x++) {
 
             if (accountsList[x].loc) {
-                console.log('Checking on rules for account: ', accountsList[x].token);
+                //console.log('Checking on rules for account: ', accountsList[x].token);
 
                 var orderQuery = { toLoc: { $near: { $geometry: { type: 'Point', coordinates: accountsList[x].loc.coordinates }, $maxDistance: accountsList[x].defaultMileRadiusForAutoAcceptReject } }, orderStatus: 1 };
-                console.log("Order Query: ", JSON.stringify(orderQuery));
+                //console.log("Order Query: ", JSON.stringify(orderQuery));
                 Order.find(orderQuery, function(err, ordersList) {
                     if (ordersList) {
                         for (var y = 0; y < ordersList.length; y++) {
-                            console.log("Matched: ", accountsList[x].token, " with ", ordersList[0]._id);
+                            //console.log("Matched: ", accountsList[x].token, " with ", ordersList[0]._id);
                         }
                     }
                 });
@@ -99,13 +99,13 @@ function orderCreate(req, res) {
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
     var orderBody = req.body || 'no order given';
     var orderDetail = util.format('OrderCreate reqBody: %j!', orderBody);
-    console.log("orderCreate", orderDetail);
+    //console.log("orderCreate", orderDetail);
     // Create a order in memory
     var orderToInsert = new Order(orderBody);
 
     getCoords(req).then(
         function(geoCodeResult) {
-            console.log('OrderCreate.GeoCodeResult: ', geoCodeResult);
+            //console.log('OrderCreate.GeoCodeResult: ', geoCodeResult);
             orderToInsert.toGeoCode = geoCodeResult.toGeoCode;
             orderToInsert.fromGeoCode = geoCodeResult.fromGeoCode;
             orderToInsert.toLoc = { type: 'Point', coordinates: [geoCodeResult.toGeoCode[0].longitude, geoCodeResult.toGeoCode[0].latitude] };
@@ -122,7 +122,7 @@ function orderCreate(req, res) {
                     console.log(err);
                     //res.json({stuff:err});
                 } else {
-                    console.log(orderToInsert);
+                    //console.log(orderToInsert);
                     AutoAccept(orderToInsert);
                     res.json(orderToInsert.toString());
                 }

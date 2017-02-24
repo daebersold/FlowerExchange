@@ -25,7 +25,7 @@ var getCoords = function(zipCode) {
     geocoder.geocode(zipCode).then(
             function(geoCodedResult) {
                 // Success!
-                console.log("geoCodedResults", geoCodedResult);
+                //console.log("geoCodedResults", geoCodedResult);
                 deferred.resolve(geoCodedResult);
             })
         .catch(function(err) {
@@ -56,13 +56,13 @@ function orders(req, res) {
     }
     radius = radius * 1609.34;
 
-    console.log("zipCode: ", zipCode);
-    console.log("radius: ", radius);
+    //console.log("zipCode: ", zipCode);
+    //console.log("radius: ", radius);
 
     // get Coordinates of Zip Code
     getCoords(zipCode).then(
         function(geoCodedResult) {
-            console.log('Orders.GeoCodeResult: ', geoCodedResult);
+            //console.log('Orders.GeoCodeResult: ', geoCodedResult);
             var lookupCoords = [geoCodedResult[0].longitude, geoCodedResult[0].latitude];
 
             // Remember to create the indexes required.
@@ -72,11 +72,11 @@ function orders(req, res) {
             // Look it up!
             var query = { toLoc: { $near: { $geometry: { type: 'Point', coordinates: lookupCoords }, $maxDistance: radius } } };
 
-            console.log("Executing Query: ", query);
+            //console.log("Executing Query: ", query);
             /* GET /orders listing. */
             Order.find(query, function(err, ordersList) {
                 if (err) return console.log(err);
-                console.log("Found these orders:", ordersList);
+                //console.log("Found these orders:", ordersList);
                 res.json(ordersList);
             });
         });

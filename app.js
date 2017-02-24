@@ -49,7 +49,7 @@ var config = {
                         return callback(new Error('Access denied!'));
                     }
                     // If we found it, let's get the account List for futher usage.
-                    console.log("Found these accounts:", accountList);
+                    //console.log("Found these accounts:", accountList);
 
                     req.account = accountList[0];
                     // Allow continuation - token is good

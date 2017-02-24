@@ -14,7 +14,7 @@ info:
 
     [Learn about FlowerExchange](http://flowers-flowers.com) or join the Facebook Page 'flower-exchange'.
 
-    For this sample, you can use the api key `1234` to test the authorization filters
+    For this sample, you can use the api key `1234` to test the authorization filters.
   contact:
     name: davidaebersold+FlowerExchange@gmail.com
   license:

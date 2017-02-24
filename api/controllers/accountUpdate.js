@@ -23,7 +23,7 @@ var getCoords = function(req) {
     geocoder.geocode(addressToGeoCode).then(
             function(geoCodedResult) {
                 // Success!
-                console.log("Geocoded Results:", geoCodedResult);
+                //console.log("Geocoded Results:", geoCodedResult);
                 var result = {};
                 result = geoCodedResult;
                 deferred.resolve(result);
@@ -39,10 +39,10 @@ function accountUpdate(req, res) {
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
     var accountBody = req.body || 'no account given';
     var accountDetail = util.format('AccountUpdate reqBody: %j!', accountBody);
-    console.log("accountUpdate: ", accountDetail);
+    //console.log("accountUpdate: ", accountDetail);
 
     var accountId = req.swagger.params.id.value;
-    console.log("accountId", accountId);
+    //console.log("accountId", accountId);
     // Update account in memory
     var accountToUpdate = new Account(accountBody);
     accountToUpdate._id = accountId;
@@ -54,18 +54,18 @@ function accountUpdate(req, res) {
 
     getCoords(req).then(
         function(geoCodeResult) {
-            console.log('AccountUpdate.GeoCodeResult: ', geoCodeResult);
+            //console.log('AccountUpdate.GeoCodeResult: ', geoCodeResult);
             accountToUpdate.geoCode = geoCodeResult;
             accountToUpdate.loc = { type: 'Point', coordinates: [geoCodeResult[0].longitude, geoCodeResult[0].latitude] };
 
-            console.log("Updating Account: ", accountToUpdate);
+            //console.log("Updating Account: ", accountToUpdate);
 
             Account.findOne(query, function(err, account) {
                 if (err) {
                     console.log("Error: account does not exist ", accountId);
                     res.json({ result: err });
                 } else {
-                    console.log("account found: ", account);
+                    //console.log("account found: ", account);
 
                     // No need to reset token
                     // No need to update create date
@@ -90,7 +90,7 @@ function accountUpdate(req, res) {
                     // Save it to database
                     account.save(function(err) {
                         if (!err) {
-                            console.log("Account saved: " + account);
+                            //console.log("Account saved: " + account);
                             res.json(account.toString());
                         } else {
                             console.log("Error: could not save account ", account);
