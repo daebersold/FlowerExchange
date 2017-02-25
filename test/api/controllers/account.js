@@ -1,5 +1,3 @@
-// istanbul -x "test/**" cover _mocha -- --recursive -R tap test/ > test.tap && istanbul report clover –  snoof 9 hours ago 
-// istanbul -x "test/**" cover /Users/davidaebersold/dev/FlowerExchange/test/api/controllers/account.js
 var should = require('should');
 var request = require('supertest');
 var server = require('../../../app');

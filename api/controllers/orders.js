@@ -1,35 +1,14 @@
 'use strict';
 var q = require('q');
 var util = require('util');
-var mongoose = require('mongoose');
-var Global = require("../../globals.js");
 var Order = require('../models/Order.js');
-var NodeGeocoder = require('node-geocoder');
+var GeoLocation = require("../helpers/geoLocation.js");
 
 module.exports = {
     orders: orders
 };
 
-var getCoords = function(zipCode) {
-    var deferred = q.defer();
-
-    var options = Global.options;
-    var geocoder = NodeGeocoder(options);
-
-    geocoder.geocode(zipCode).then(
-            function(geoCodedResult) {
-                // Success!
-                //console.log("geoCodedResults", geoCodedResult);
-                deferred.resolve(geoCodedResult);
-            })
-        .catch(function(err) {
-            console.log(err);
-        });
-    return deferred.promise;
-};
-
 function orders(req, res) {
-
 
     // Reqlize that req.account gets set in app when token is verified and account is retrieved.
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
@@ -50,13 +29,9 @@ function orders(req, res) {
     }
     radius = radius * 1609.34;
 
-    //console.log("zipCode: ", zipCode);
-    //console.log("radius: ", radius);
-
     // get Coordinates of Zip Code
-    getCoords(zipCode).then(
+    GeoLocation.getCoordsByZip(zipCode).then(
         function(geoCodedResult) {
-            //console.log('Orders.GeoCodeResult: ', geoCodedResult);
             var lookupCoords = [geoCodedResult[0].longitude, geoCodedResult[0].latitude];
 
             // Remember to create the indexes required.
@@ -66,11 +41,9 @@ function orders(req, res) {
             // Look it up!
             var query = { toLoc: { $near: { $geometry: { type: 'Point', coordinates: lookupCoords }, $maxDistance: radius } } };
 
-            //console.log("Executing Query: ", query);
             /* GET /orders listing. */
             Order.find(query, function(err, ordersList) {
                 if (err) return console.log(err);
-                //console.log("Found these orders:", ordersList);
                 res.json(ordersList);
             });
         });
