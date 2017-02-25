@@ -64,6 +64,62 @@ describe('controllers', function() {
         });
 
 
+        describe('POST /order/create', function() {
+            it('should create an order', function(done) {
+
+                var order = {
+                    id: 1,
+                    originatingAccountId: 2,
+                    fullfillmentAccountId: 2,
+                    toFirstName: "John",
+                    toLastName: "Doe",
+                    toAddress1: "123 Main St",
+                    toAddress2: "Suite 4",
+                    toCity: "Beverly Hills",
+                    toState: "CA",
+                    toZipCode: 90210,
+                    toHomePhone: "555-555-5555",
+                    toMobilePhone: "555-555-5555",
+                    toEmail: "test@email.com",
+                    fromFirstName: "Jane",
+                    fromLastName: "Doe",
+                    fromAddress1: "123 Main St",
+                    fromAddress2: "123 Main St.",
+                    fromCity: "New Albany",
+                    fromState: "IN",
+                    fromZipCode: 47150,
+                    fromHomePhone: "555-555-5555",
+                    fromMobilePhone: "555-555-5555",
+                    fromEmail: "test2@email.com",
+                    orderDetails: [{
+                        itemNumber: "142",
+                        itemName: "TakeMyHeartAway",
+                        itemDescription: "28 beautiful multi-colored roses in a vase",
+                        itemCost: 75,
+                        itemMaxCost: 75
+                    }],
+                    orderTotal: 75,
+                    orderTotalNotToExceed: 75,
+                    deliveryDate: "2017-02-25",
+                    timedDelivery: true,
+                    deliveryTime: "2017-02-27T19:20:30.45+01:00",
+                    expirationDate: "2017-02-27"
+                };
+
+                request(server)
+                    .post('/order/create')
+                    .set('api_key', '1234')
+                    .set('Accept', 'application/json')
+                    .send(order)
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function(err, res) {
+                        should.not.exist(err);
+                        res.body.should.be.instanceof(Object)
+                        done();
+                    });
+            });
+        });
     });
 
 });

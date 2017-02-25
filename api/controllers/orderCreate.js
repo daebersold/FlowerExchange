@@ -7,21 +7,10 @@ var Account = require('../models/Account.js');
 var Global = require("../../globals.js");
 var NodeGeocoder = require('node-geocoder');
 
-console.log("global:", Global);
-
 var getCoords = function(req) {
     var deferred = q.defer();
 
-    // var options = {
-    //   provider: 'google',
-
-    //   // Optional depending on the providers 
-    //   httpAdapter: 'https', // Default 
-    //   apiKey: 'AIzaSyCSnHoaN7NnFdr-SLSg4vSBGlXeO2MGJ9M', // for Mapquest, OpenCage, Google Premier 
-    //   formatter: null         // 'gpx', 'string', ... 
-    // };
     var options = Global.options;
-
     var geocoder = NodeGeocoder(options);
 
     var toAddress1 = req.body.toAddress1 || "";
@@ -42,7 +31,7 @@ var getCoords = function(req) {
     geocoder.geocode(addressToGeoCode).then(
             function(toGeoCodedResult) {
                 // Success!
-                console.log(toGeoCodedResult);
+                //console.log(toGeoCodedResult);
                 geocoder.geocode(addressFromGeoCode).then(
                         function(fromGeoCodedResult) {
                             // Success!

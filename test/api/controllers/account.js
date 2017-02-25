@@ -97,6 +97,42 @@ describe('controllers', function() {
             });
         });
 
+        describe('PUT /account/update/', function() {
+            it('should update an account', function(done) {
+
+                var account = {
+                    name: 'Jane Doe',
+                    address1: '123 Main st',
+                    address2: 'Suite 4',
+                    city: 'New Albany',
+                    state: 'IN',
+                    zip: '47150',
+                    contactEmail: 'emailAddress@test.com',
+                    contactPhone: '555-555-5555',
+                    autoAcceptIfMoreThan: 50,
+                    autoRejectIfLessThan: 25,
+                    minimumOrderAmount: 50,
+                    defaultMileRadiusForAutoAcceptReject: 50
+                };
+
+                request(server)
+                    .put('/account/update/582bebf42150364e146fa538')
+                    .set('api_key', '1234')
+                    .set('Accept', 'application/json')
+                    .query({
+                        'id': '582bebf42150364e146fa538'
+                    })
+                    .send(account)
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function(err, res) {
+                        should.not.exist(err);
+                        res.body.should.be.instanceof(Object)
+                        done();
+                    });
+            });
+        });
+
     });
 
 });

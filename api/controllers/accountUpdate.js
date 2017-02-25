@@ -9,8 +9,8 @@ var NodeGeocoder = require('node-geocoder');
 
 var getCoords = function(req) {
     var deferred = q.defer();
-    var options = Global.options;
 
+    var options = Global.options;
     var geocoder = NodeGeocoder(options);
 
     var address1 = req.body.address1 || "";

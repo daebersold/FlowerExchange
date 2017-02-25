@@ -2,6 +2,7 @@
 var q = require('q');
 var util = require('util');
 var mongoose = require('mongoose');
+var Global = require("../../globals.js");
 var Order = require('../models/Order.js');
 var NodeGeocoder = require('node-geocoder');
 
@@ -11,15 +12,8 @@ module.exports = {
 
 var getCoords = function(zipCode) {
     var deferred = q.defer();
-    var options = {
-        provider: 'google',
 
-        // Optional depending on the providers 
-        httpAdapter: 'https', // Default 
-        apiKey: 'AIzaSyCT65N6riWxnR5nUkqRnfOx0dTPBo_Eb2Q', // for Mapquest, OpenCage, Google Premier 
-        formatter: null // 'gpx', 'string', ... 
-    };
-
+    var options = Global.options;
     var geocoder = NodeGeocoder(options);
 
     geocoder.geocode(zipCode).then(
