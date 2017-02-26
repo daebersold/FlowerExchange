@@ -16,7 +16,7 @@ function accountCreate(req, res) {
     // Remember to create the indexes required.
     // db.accounts.createIndex( { loc : "2dsphere" } )
 
-    geoLocation.getCoords(req).then(
+    geoLocation.getCoordsForAccount(req).then(
         function(geoCodeResult) {
             accountToInsert.geoCode = geoCodeResult;
             accountToInsert.loc = { type: 'Point', coordinates: [geoCodeResult[0].longitude, geoCodeResult[0].latitude] };

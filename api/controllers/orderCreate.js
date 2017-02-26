@@ -1,58 +1,11 @@
 'use strict';
-var q = require('q');
+
 var util = require('util');
-var mongoose = require('mongoose');
 var Order = require('../models/Order.js');
 var Account = require('../models/Account.js');
-var Global = require("../../globals.js");
-var NodeGeocoder = require('node-geocoder');
+var geoLocation = require("../helpers/geoLocation.js");
 
-var getCoords = function(req) {
-    var deferred = q.defer();
-
-    var options = Global.options;
-    var geocoder = NodeGeocoder(options);
-
-    var toAddress1 = req.body.toAddress1 || "";
-    var toAddress2 = req.body.toAddress2 || "";
-    var toCity = req.body.toCity || "";
-    var toState = req.body.toState || "";
-    var toZipCode = req.body.toZipCode || "";
-    var addressToGeoCode = toAddress1 + " " + toAddress2 + " " + toCity + " " + toState + " " + toZipCode;
-
-
-    var fromAddress1 = req.body.fromAddress1 || "";
-    var fromAddress2 = req.body.fromAddress2 || "";
-    var fromCity = req.body.fromCity || "";
-    var fromState = req.body.fromState || "";
-    var fromZipCode = req.body.fromZipCode || "";
-    var addressFromGeoCode = fromAddress1 + " " + fromAddress2 + " " + fromCity + " " + fromState + " " + fromZipCode;
-
-    geocoder.geocode(addressToGeoCode).then(
-            function(toGeoCodedResult) {
-                // Success!
-                //console.log(toGeoCodedResult);
-                geocoder.geocode(addressFromGeoCode).then(
-                        function(fromGeoCodedResult) {
-                            // Success!
-                            //console.log(fromGeoCodedResult);
-                            var result = {};
-                            result.toGeoCode = toGeoCodedResult;
-                            result.fromGeoCode = fromGeoCodedResult;
-                            deferred.resolve(result);
-                        })
-                    .catch(function(err) {
-                        console.log(err);
-                    });
-            })
-        .catch(function(err) {
-            console.log(err);
-        });
-    return deferred.promise;
-};
-
-// AutoAccept will go through all orders and apply rules
-// 
+// AutoAccept will go through all orders and apply rules 
 var AutoAccept = function(orderToInsert) {
     // Brute force... go through all accounts.
     // for each account, look at open orders.
@@ -88,11 +41,11 @@ function orderCreate(req, res) {
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
     var orderBody = req.body || 'no order given';
     var orderDetail = util.format('OrderCreate reqBody: %j!', orderBody);
-    //console.log("orderCreate", orderDetail);
+
     // Create a order in memory
     var orderToInsert = new Order(orderBody);
 
-    getCoords(req).then(
+    geoLocation.getCoordsForOrder(req).then(
         function(geoCodeResult) {
             //console.log('OrderCreate.GeoCodeResult: ', geoCodeResult);
             orderToInsert.toGeoCode = geoCodeResult.toGeoCode;

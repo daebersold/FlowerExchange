@@ -38,7 +38,7 @@ var config = {
             //console.log('A scope key2: ',scopesOrApiKey);
             if (scopesOrApiKey === undefined) {
                 // If api key is not supplied, then deny
-                callback(new Error('access denied!'));
+                return callback(new Error('access denied!'));
             } else {
                 var query = { token: scopesOrApiKey };
 

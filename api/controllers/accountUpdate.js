@@ -20,7 +20,7 @@ function accountUpdate(req, res) {
 
     var query = { '_id': accountId };
 
-    geoLocation.getCoords(req).then(
+    geoLocation.getCoordsForAccount(req).then(
         function(geoCodeResult) {
             accountToUpdate.geoCode = geoCodeResult;
             accountToUpdate.loc = { type: 'Point', coordinates: [geoCodeResult[0].longitude, geoCodeResult[0].latitude] };

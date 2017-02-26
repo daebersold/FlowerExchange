@@ -21,7 +21,7 @@ describe('controllers', function() {
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
-                        res.body.should.be.instanceof(Object)
+                        res.body.should.be.instanceof(Object);
                         done();
                     });
             });
@@ -37,7 +37,7 @@ describe('controllers', function() {
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
-                        res.body.should.be.instanceof(Object)
+                        res.body.should.be.instanceof(Object);
                         done();
                     });
             });
@@ -57,14 +57,14 @@ describe('controllers', function() {
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
-                        res.body.should.be.instanceof(Object)
+                        res.body.should.be.instanceof(Object);
                         done();
                     });
             });
         });
 
-
         describe('POST /order/create', function() {
+
             it('should create an order', function(done) {
 
                 var order = {
@@ -115,9 +115,88 @@ describe('controllers', function() {
                     .expect(200)
                     .end(function(err, res) {
                         should.not.exist(err);
-                        res.body.should.be.instanceof(Object)
+                        res.body.should.be.instanceof(Object);
                         done();
                     });
+            });
+        });
+
+        describe('Get /order/accept', function() {
+
+            it('should accept an order', function(done) {
+                this.timeout(6000);
+                // Chance for collision - this is the customer's ID in their system.
+                var newId = Math.floor(Math.random() * (1000000 - 1)) + 1;
+                //console.log("newId", newId);
+                // create an order so that we can accept it
+                var order = {
+                    id: newId,
+                    originatingAccountId: 2,
+                    toFirstName: "John",
+                    toLastName: "Doe",
+                    toAddress1: "123 Main St",
+                    toAddress2: "Suite 4",
+                    toCity: "Beverly Hills",
+                    toState: "CA",
+                    toZipCode: 90210,
+                    toHomePhone: "555-555-5555",
+                    toMobilePhone: "555-555-5555",
+                    toEmail: "test@email.com",
+                    fromFirstName: "Jane",
+                    fromLastName: "Doe",
+                    fromAddress1: "123 Main St",
+                    fromAddress2: "123 Main St.",
+                    fromCity: "New Albany",
+                    fromState: "IN",
+                    fromZipCode: 47150,
+                    fromHomePhone: "555-555-5555",
+                    fromMobilePhone: "555-555-5555",
+                    fromEmail: "test2@email.com",
+                    orderDetails: [{
+                        itemNumber: "142",
+                        itemName: "TakeMyHeartAway",
+                        itemDescription: "28 beautiful multi-colored roses in a vase",
+                        itemCost: 75,
+                        itemMaxCost: 75
+                    }],
+                    orderTotal: 75,
+                    orderTotalNotToExceed: 75,
+                    deliveryDate: "2017-02-25",
+                    timedDelivery: true,
+                    deliveryTime: "2017-02-27T19:20:30.45+01:00",
+                    expirationDate: "2017-02-27"
+                };
+
+                request(server)
+                    .post('/order/create')
+                    .set('api_key', '1234')
+                    .set('Accept', 'application/json')
+                    .send(order)
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function(err, res) {
+                        should.not.exist(err);
+                        res.body.should.be.instanceof(Object);
+                    });
+
+                // Allow the insert to occur; So hacky I don't like this.
+                setTimeout(function() {
+                    // now accept the order just created
+                    request(server)
+                        .get('/order/accept')
+                        .set('Accept', 'application/json')
+                        .set('api_key', '1234')
+                        .query({ orderId: newId })
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .end(function(err, res) {
+                            should.not.exist(err);
+                            res.body.should.be.instanceof(Object);
+                            // really should do a check here to see if fullfillmentAccountId is set.
+                            done();
+                        })
+                }, 3000);
+
             });
         });
     });
