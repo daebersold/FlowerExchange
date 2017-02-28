@@ -53,12 +53,12 @@ paths:
           in: query
           description: The accountId assigned to your flower shop operates.
           required: true
-          type: number
+          type: string
         - name: secretKey
           in: query
           description: The secret key for your assigned flower shop.
           required: true
-          type: number
+          type: string
       # responses may fall through to errors
       responses:
         "200":
@@ -129,6 +129,107 @@ paths:
           schema:
             # a pointer to a definition
             $ref: "#/definitions/AccountResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
+  /account/forgotSecretKey:
+    x-swagger-router-controller: accountForgotSecretKey
+    get:
+      tags:
+        - account
+      description: Sends email to account holder with new secrect key
+      operationId: accountForgotSecretKey
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: contactEmail
+          in: query
+          description: Email of the account holder
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountForgotPasswordResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
+  /account/resetSecretKey:
+    x-swagger-router-controller: accountResetSecretKey
+    get:
+      tags:
+        - account
+      description: Sends email to account holder with new secrect key
+      operationId: accountResetSecretKey
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: contactEmail
+          in: query
+          description: Email of the account holder
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountForgotPasswordResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
+  /account/confirmSecretKey:
+    x-swagger-router-controller: accountConfirmSecretKey
+    get:
+      tags:
+        - account
+      description: Sends email to account holder with new secrect key
+      operationId: accountConfirmSecretKey
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: contactEmail
+          in: query
+          description: Email of the account holder
+          required: false
+          type: string
+        - name: token
+          in: query
+          description: New token to confirm update
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AccountForgotPasswordConfirmationResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -343,6 +444,18 @@ definitions:
       message:
         type: string
   ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  AccountForgotPasswordResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  AccountForgotPasswordConfirmationResponse:
     required:
       - message
     properties:

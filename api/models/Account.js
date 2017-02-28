@@ -2,6 +2,9 @@ var mongoose = require('mongoose');
 
 var AccountSchema = new mongoose.Schema({
     token: String,
+    resetToken: String,
+    resetTokenDate: { type: Date, default: Date.now },
+    resetTokenTimeout: String,
     name: String,
     address1: String,
     address2: String,
