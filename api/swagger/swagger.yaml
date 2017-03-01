@@ -314,6 +314,42 @@ paths:
         - flowerexchange_auth:
           - write_account
           - read_account
+  /eligibileOrders:
+    # binds a128 app logic to a route
+    x-swagger-router-controller: eligibileOrders
+    get:
+      tags:
+        - orders
+      description: Returns list of 'Orders' to the caller based on given Account
+      # used as the method name of the controller
+      operationId: eligibileOrders
+      parameters:
+        - name: accountId
+          in: query
+          description: Your account ID
+          required: true
+          type: string
+        - name: secretKey
+          in: query
+          description: The secret key given to you when you registered
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/OrdersResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+        - api_key: []
+        - flowerexchange_auth:
+          - write_account
+          - read_account
   /order:
     # binds a127 app logic to a route
     x-swagger-router-controller: order
