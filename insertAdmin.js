@@ -4,10 +4,12 @@
 use flower-exchange
 
 db.accounts.insert({
-    "token": "1234",
+    "token": "asdf",
     "resetToken": "",
     "resetTokenDate": ISODate("2016-11-16T05:17:40.370Z"),
     "resetTokenTimeout": "",
+    "active": true,
+    "isSuperUser": true,
     "loc": {
         "coordinates": [-118.4003563,
             34.0736204
@@ -37,7 +39,6 @@ db.accounts.insert({
         "latitude": 34.0736204,
         "formattedAddress": "Beverly Hills, CA, USA"
     }],
-    "isSuperUser": true,
     "name": "John Doe",
     "address1": "1000 Rodeo Dr.",
     "address2": "Suite F",

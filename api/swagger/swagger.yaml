@@ -53,11 +53,6 @@ paths:
           description: The accountId assigned to your flower shop operates.
           required: true
           type: string
-        - name: secretKey
-          in: query
-          description: The secret key for your assigned flower shop.
-          required: true
-          type: string
       # responses may fall through to errors
       responses:
         "200":

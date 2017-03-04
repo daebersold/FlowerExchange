@@ -22,13 +22,6 @@ var config = {
 
         // api_key - method to evaluation of authorization
         api_key: function(req, authOrSecDef, scopesOrApiKey, callback) {
-            // your security code
-            // Look it up!
-            var apiKey = req.headers["api_key"];
-            if (!apiKey) {
-                // commented out because of unit tests. URL doesn't exist.
-                //apiKey = url.parse(req.url, true).query["api_key"];
-            }
 
             // ****
             // Security Check section
@@ -40,18 +33,24 @@ var config = {
                 // If api key is not supplied, then deny
                 return callback(new Error('access denied!'));
             } else {
-                var query = { token: scopesOrApiKey };
 
+                var accountId = req.swagger.params.accountId.value;
+                if ( accountId.length !== 24){
+                     return callback(new Error('Access denied!'));
+                }
+                var _id = mongoose.Types.ObjectId(accountId);
+
+                var query = { token: scopesOrApiKey, _id : _id };
                 /* Verify token exists with particular account. */
-                Account.find(query, function(err, accountList) {
+                Account.findOne(query, function(err, account) {
+
                     // If not, return forbidden.
-                    if (err || accountList === null || accountList.length === 0) {
+                    if (err || account === null || account.active !== true ) {
                         return callback(new Error('Access denied!'));
                     }
                     // If we found it, let's get the account List for futher usage.
-                    //console.log("Found these accounts:", accountList);
-
-                    req.account = accountList[0];
+                    req.account = account;
+                    
                     // Allow continuation - token is good
                     callback(null);
                 });
