@@ -5,6 +5,7 @@ var AccountSchema = new mongoose.Schema({
     resetToken: String,
     resetTokenDate: { type: Date, default: Date.now },
     resetTokenTimeout: String,
+    isSuperUser: Boolean,
     name: String,
     address1: String,
     address2: String,

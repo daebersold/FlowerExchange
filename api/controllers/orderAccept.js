@@ -2,36 +2,54 @@
 var util = require('util');
 var mongoose = require('mongoose');
 var Order = require('../models/Order.js');
+var Account = require('../models/Account.js');
 
+// Will return an orderAcceptSchema
 function orderAccept(req, res) {
+    // Reqlize that req.account gets set in app when token is verified and account is retrieved.
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-    var orderId = req.swagger.params.orderId.value || 'no id given';
-    var orderDetail = util.format('Order: %d!', orderId);
+    var accountId = req.swagger.params.accountId.value;
+    var secretKey = req.swagger.params.secretKey.value;
 
-    var orderQuery = { "id": orderId }; //{ loc : { $near : { $geometry : { type : 'Point', coordinates : orderToInsert.toLoc.coordinates}, $maxDistance: { $val: 'defaultMileRadiusForAutoAcceptReject'} }, orderStatus: 1 };
-    Order.findOne(orderQuery, function(err, order) {
-        if (err) {
-            console.log("error", err);
-        } else {
-            // Fields to Update
-            order.fullfillmentAccountId = 100;
-            order.dateModified = Date.now();
+    var query = {
+        _id: accountId,
+        token: secretKey,
+    };
 
-            // Save it to database
-            order.save(function(err) {
-                if (!err) {
-                    //console.log('order', order);
-                    res.json(order.toString());
+    Account.findOne(query, function(err, account) {
+
+        if (!err && account) {
+            var orderId = req.swagger.params.orderId.value || 'no id given';
+            var orderQuery = { '_id': orderId }; //{ loc : { $near : { $geometry : { type : 'Point', coordinates : orderToInsert.toLoc.coordinates}, $maxDistance: { $val: 'defaultMileRadiusForAutoAcceptReject'} }, orderStatus: 1 };
+            Order.findOne(orderQuery, function(err, order) {
+                if (!err && order) {
+
+                    // Fields to Update
+                    order.fullfillmentAccountId = account._id;
+                    order.dateModified = Date.now();
+
+                    //db.orders.update({originatingAccountId:3424},{$set:{originatingAccountId: ObjectId("582bec6dcac4e18614b7b1b0")}},{ multi: true })
+
+                    // Save it to database
+                    order.save(function(err) {
+                        if (!err) {
+                            var result = { order: order, result: true, resultMessage: "Successfully accpted order" };
+                            res.json(result);
+                        } else {
+                            console.log("Error: could not save order ", err, order);
+                            res.json({ result: err });
+                        }
+                    });
                 } else {
-                    console.log("Error: could not save order ", order);
+                    console.log("Order lookup error: ", err);
                     res.json({ result: err });
                 }
             });
+        } else {
+            console.log("Account lookup error: ", err);
+            res.json({ result: err });
         }
     });
-
-    // this sends back a JSON response which is a single string
-    res.json(orderDetail);
 }
 
 module.exports = {

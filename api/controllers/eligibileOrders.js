@@ -4,6 +4,7 @@ var util = require('util');
 var Order = require('../models/Order.js');
 var Account = require('../models/Account.js');
 var GeoLocation = require("../helpers/geoLocation.js");
+var mongoose = require('mongoose');
 
 function eligibileOrders(req, res) {
 
@@ -13,7 +14,7 @@ function eligibileOrders(req, res) {
     var secretKey = req.swagger.params.secretKey.value;
 
     var query = {
-        _id: accountId,
+        _id: mongoose.Types.ObjectId(accountId),
         token: secretKey,
     };
 

@@ -1,8 +1,9 @@
 var mongoose = require('mongoose');
+
 var OrderSchema = new mongoose.Schema({
-    id: Number,
-    originatingAccountId: Number,
-    fullfillmentAccountId: Number,
+    id: String,
+    originatingAccountId: mongoose.Schema.ObjectId,
+    fullfillmentAccountId: mongoose.Schema.ObjectId,
     toFirstName: String,
     toLastName: String,
     toAddress1: String,

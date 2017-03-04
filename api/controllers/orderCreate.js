@@ -38,41 +38,61 @@ var AutoAccept = function(orderToInsert) {
 
 function orderCreate(req, res) {
 
+    // Reqlize that req.account gets set in app when token is verified and account is retrieved.
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-    var orderBody = req.body || 'no order given';
-    var orderDetail = util.format('OrderCreate reqBody: %j!', orderBody);
+    var accountId = req.body.accountId;
+    var secretKey = req.body.secretKey;
 
-    // Create a order in memory
-    var orderToInsert = new Order(orderBody);
+    var query = {
+        _id: accountId,
+        token: secretKey,
+    };
+    console.log('query', query);
+    Account.findOne(query, function(err, account) {
 
-    geoLocation.getCoordsForOrder(req).then(
-        function(geoCodeResult) {
-            //console.log('OrderCreate.GeoCodeResult: ', geoCodeResult);
-            orderToInsert.toGeoCode = geoCodeResult.toGeoCode;
-            orderToInsert.fromGeoCode = geoCodeResult.fromGeoCode;
-            orderToInsert.toLoc = { type: 'Point', coordinates: [geoCodeResult.toGeoCode[0].longitude, geoCodeResult.toGeoCode[0].latitude] };
-            orderToInsert.fromLoc = { type: 'Point', coordinates: [geoCodeResult.fromGeoCode[0].longitude, geoCodeResult.fromGeoCode[0].latitude] };
+        if (!err && account) {
+
+            // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
+            var orderBody = req.body || 'no order given';
+            var orderDetail = util.format('OrderCreate reqBody: %j!', orderBody);
+
+            // Create a order in memory
+            var orderToInsert = new Order(orderBody);
+
+            // Set Fields Relative to Creator
+            orderToInsert.originatingAccountId = account._id;
+
+            geoLocation.getCoordsForOrder(req).then(
+                function(geoCodeResult) {
+                    //console.log('OrderCreate.GeoCodeResult: ', geoCodeResult);
+                    orderToInsert.toGeoCode = geoCodeResult.toGeoCode;
+                    orderToInsert.fromGeoCode = geoCodeResult.fromGeoCode;
+                    orderToInsert.toLoc = { type: 'Point', coordinates: [geoCodeResult.toGeoCode[0].longitude, geoCodeResult.toGeoCode[0].latitude] };
+                    orderToInsert.fromLoc = { type: 'Point', coordinates: [geoCodeResult.fromGeoCode[0].longitude, geoCodeResult.fromGeoCode[0].latitude] };
 
 
-            // Remember to create the indexes required.
-            // db.orders.createIndex( { toLoc : "2dsphere" } )
-            // db.orders.createIndex( { fromLoc : "2dsphere" } )
+                    // Remember to create the indexes required.
+                    // db.orders.createIndex( { toLoc : "2dsphere" } )
+                    // db.orders.createIndex( { fromLoc : "2dsphere" } )
+                    // time value:  1985-04-12T23:20:50.52Z
 
-            // Save it to database
-            orderToInsert.save(function(err) {
-                if (err) {
-                    console.log(err);
-                    //res.json({stuff:err});
-                } else {
-                    //console.log(orderToInsert);
-                    AutoAccept(orderToInsert);
-                    res.json(orderToInsert.toString());
-                }
-            });
-        });
-
-    // this sends back a JSON response which is a single string
-    //res.json(orderDetail);
+                    // Save it to database
+                    orderToInsert.save(function(err) {
+                        if (err) {
+                            console.log(err);
+                            res.json({ message: "Failed to create order." });
+                        } else {
+                            console.log(orderToInsert);
+                            //AutoAccept(orderToInsert);
+                            res.json(orderToInsert.toString());
+                        }
+                    });
+                });
+        } else {
+            console.log(err);
+            res.json({ message: "Failed to lookup account" });
+        }
+    });
 }
 
 module.exports = {
