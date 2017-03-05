@@ -32,20 +32,21 @@ function accountUpdate(req, res) {
                     // No need to update create date
 
                     // Fields to Update
-                    account.geoCode = accountToUpdate.geoCode;
-                    account.loc = accountToUpdate.loc;
-                    account.name = accountToUpdate.name;
-                    account.address1 = accountToUpdate.address1;
+                    account.username = accountToUpdate.username || account.username;
+                    account.geoCode = accountToUpdate.geoCode || account.geoCode;
+                    account.loc = accountToUpdate.loc || account.loc;
+                    account.name = accountToUpdate.name || account.name;
+                    account.address1 = accountToUpdate.address1 || account.address1;
                     account.address2 = accountToUpdate.address2;
-                    account.city = accountToUpdate.city;
-                    account.state = accountToUpdate.state;
-                    account.zip = accountToUpdate.zip;
-                    account.contactEmail = accountToUpdate.contactEmail;
-                    account.contactPhone = accountToUpdate.contactPhone;
-                    account.autoAcceptIfMoreThan = accountToUpdate.autoAcceptIfMoreThan;
-                    account.autoRejectIfLessThan = accountToUpdate.autoRejectIfLessThan;
-                    account.minimumOrderAmount = accountToUpdate.minimumOrderAmount;
-                    account.defaultMileRadiusForAutoAcceptReject = accountToUpdate.defaultMileRadiusForAutoAcceptReject;
+                    account.city = accountToUpdate.city || account.city;
+                    account.state = accountToUpdate.state || account.state;
+                    account.zip = accountToUpdate.zip || account.zip;
+                    account.contactEmail = accountToUpdate.contactEmail || account.contactEmail;
+                    account.contactPhone = accountToUpdate.contactPhone || account.contactPhone;
+                    account.autoAcceptIfMoreThan = accountToUpdate.autoAcceptIfMoreThan || account.autoAcceptIfMoreThan;
+                    account.autoRejectIfLessThan = accountToUpdate.autoRejectIfLessThan || account.autoRejectIfLessThan;
+                    account.minimumOrderAmount = accountToUpdate.minimumOrderAmount || account.minimumOrderAmount;
+                    account.defaultMileRadiusForAutoAcceptReject = accountToUpdate.defaultMileRadiusForAutoAcceptReject || account.defaultMileRadiusForAutoAcceptReject;
                     account.dateModified = Date.now();
 
                     // Save it to database

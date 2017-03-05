@@ -197,7 +197,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
       security: [ { api_key: [], username: [] } ]
-  /account/update/{id}:
+  /account/update:
     x-swagger-router-controller: accountUpdate
     put:
       tags:
@@ -208,11 +208,6 @@ paths:
         - application/json
         - application/xml
       parameters:
-        - name: id
-          description: Account id
-          type: string
-          in: path
-          required: true
         - name: account
           in: body
           description: Account object
@@ -612,7 +607,7 @@ definitions:
       username:
         type: string
         description: Username on account
-        title: Name
+        title: Username
       name:
         type: string
         description: Name on account
