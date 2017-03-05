@@ -13,46 +13,37 @@ function eligibileOrders(req, res) {
     var accountId = req.swagger.params.accountId.value;
     var secretKey = req.swagger.params.secretKey.value;
 
-    var query = {
-        _id: mongoose.Types.ObjectId(accountId),
-        token: req.account.token
-    };
 
-    Account.findOne(query, function(err, account) {
+    if (!err && req.account) {
 
-        if (!err && account) {
+        // If no radius is given, then default to 30 miles.
+        var radius = req.account.defaultMileRadiusForAutoAcceptReject || 0;
+        radius = radius * 1609.34;
+        var zipCode = req.account.zip;
 
-            // If no radius is given, then default to 30 miles.
-            var radius = account.defaultMileRadiusForAutoAcceptReject || 0;
-            radius = radius * 1609.34;
-            var zipCode = account.zip;
+        // get Coordinates of Zip Code
+        GeoLocation.getCoordsByZip(zipCode).then(
+            function(geoCodedResult) {
+                var lookupCoords = [geoCodedResult[0].longitude, geoCodedResult[0].latitude];
 
-            // get Coordinates of Zip Code
-            GeoLocation.getCoordsByZip(zipCode).then(
-                function(geoCodedResult) {
-                    var lookupCoords = [geoCodedResult[0].longitude, geoCodedResult[0].latitude];
+                // Remember to create the indexes required.
+                // db.orders.createIndex( { toLoc : "2dsphere" } )
+                // db.orders.createIndex( { fromLoc : "2dsphere" } )
 
-                    // Remember to create the indexes required.
-                    // db.orders.createIndex( { toLoc : "2dsphere" } )
-                    // db.orders.createIndex( { fromLoc : "2dsphere" } )
+                // Look it up!
+                var query = {
+                    fullfillmentAccountId: { $exists: false },
+                    toLoc: { $near: { $geometry: { type: 'Point', coordinates: lookupCoords }, $maxDistance: radius } }
+                };
 
-                    // Look it up!
-                    var query = {
-                        fullfillmentAccountId: { $exists: false },
-                        toLoc: { $near: { $geometry: { type: 'Point', coordinates: lookupCoords }, $maxDistance: radius } }
-                    };
-
-                    /* GET /orders listing. */
-                    Order.find(query, function(err, ordersList) {
-                        if (err) return console.log(err);
-                        res.json(ordersList);
-                    });
+                /* GET /orders listing. */
+                Order.find(query, function(err, ordersList) {
+                    if (err) return console.log(err);
+                    res.json(ordersList);
                 });
-        } else {
-            console.log(err);
-            res.json({ message: "Account does not exist." });
-        }
-    })
+            });
+
+    }
 }
 
 module.exports = {

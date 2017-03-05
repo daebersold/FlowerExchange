@@ -538,8 +538,6 @@ definitions:
   OrderCreateSchema:
     type: object
     properties:
-      accountId:
-        type: string
       id:
         type: string
       toFirstName:

@@ -3,72 +3,19 @@
 var should = require('should');
 var request = require('supertest');
 var server = require('../../../app');
+// Generate a v4 UUID (random) 
+var idgen = require('idgen');
+var orderId = idgen(8);
 
 describe('controllers', function() {
 
     describe('order', function() {
-
-        describe('GET /order', function() {
-
-            it('should return an order', function(done) {
-
-                request(server)
-                    .get('/order')
-                    .set('Accept', 'application/json')
-                    .set('api_key', '1234')
-                    .query({ orderId: 1, secretKey: 1234 })
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .end(function(err, res) {
-                        should.not.exist(err);
-                        res.body.should.be.instanceof(Object);
-                        done();
-                    });
-            });
-
-            it('should accept a name parameter', function(done) {
-
-                request(server)
-                    .get('/order')
-                    .set('api_key', '1234')
-                    .query({ orderId: 1, secretKey: 1234 })
-                    .set('Accept', 'application/json')
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .end(function(err, res) {
-                        should.not.exist(err);
-                        res.body.should.be.instanceof(Object);
-                        done();
-                    });
-            });
-
-        });
-
-        describe('Get /orders', function() {
-
-            it('should return all order', function(done) {
-
-                request(server)
-                    .get('/orders')
-                    .set('Accept', 'application/json')
-                    .set('api_key', '1234')
-                    .query({ secretKey: 1234 })
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .end(function(err, res) {
-                        should.not.exist(err);
-                        res.body.should.be.instanceof(Object);
-                        done();
-                    });
-            });
-        });
-
         describe('POST /order/create', function() {
 
             it('should create an order', function(done) {
 
                 var order = {
-                    id: 1,
+                    id: orderId,
                     originatingAccountId: 2,
                     fullfillmentAccountId: 2,
                     toFirstName: "John",
@@ -108,7 +55,8 @@ describe('controllers', function() {
 
                 request(server)
                     .post('/order/create')
-                    .set('api_key', '1234')
+                    .set('api_key', 'asecretprivatetoken')
+                    .set('username', 'bobjohnson1414')
                     .set('Accept', 'application/json')
                     .send(order)
                     .expect('Content-Type', /json/)
@@ -121,6 +69,65 @@ describe('controllers', function() {
             });
         });
 
+        describe('GET /order', function() {
+
+            it('should return an order', function(done) {
+
+                request(server)
+                    .get('/order')
+                    .set('Accept', 'application/json')
+                    .set('api_key', 'asecretprivatetoken')
+                    .set('username', 'bobjohnson1414')
+                    .query({ orderId: orderId })
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function(err, res) {
+                        should.not.exist(err);
+                        res.body.should.be.instanceof(Object);
+                        done();
+                    });
+            });
+
+            it('should accept a name parameter', function(done) {
+
+                request(server)
+                    .get('/order')
+                    .set('api_key', 'asecretprivatetoken')
+                    .set('username', 'bobjohnson1414')
+                    .query({ orderId: orderId })
+                    .set('Accept', 'application/json')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function(err, res) {
+                        should.not.exist(err);
+                        res.body.should.be.instanceof(Object);
+                        done();
+                    });
+            });
+
+        });
+
+        describe('Get /orders', function() {
+
+            it('should return all order', function(done) {
+
+                request(server)
+                    .get('/orders')
+                    .set('Accept', 'application/json')
+                    .set('api_key', 'asecretprivatetoken')
+                    .set('username', 'bobjohnson1414')
+                    .query()
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function(err, res) {
+                        should.not.exist(err);
+                        res.body.should.be.instanceof(Object);
+                        done();
+                    });
+            });
+        });
+
+
         describe('Get /order/accept', function() {
 
             it('should accept an order', function(done) {
@@ -129,9 +136,10 @@ describe('controllers', function() {
                 var newId = Math.floor(Math.random() * (1000000 - 1)) + 1;
                 //console.log("newId", newId);
                 // create an order so that we can accept it
+                var orderId = idgen(8);;
+
                 var order = {
-                    id: newId,
-                    originatingAccountId: 2,
+                    id: orderId,
                     toFirstName: "John",
                     toLastName: "Doe",
                     toAddress1: "123 Main St",
@@ -169,7 +177,8 @@ describe('controllers', function() {
 
                 request(server)
                     .post('/order/create')
-                    .set('api_key', '1234')
+                    .set('api_key', 'asecretprivatetoken')
+                    .set('username', 'bobjohnson1414')
                     .set('Accept', 'application/json')
                     .send(order)
                     .expect('Content-Type', /json/)
@@ -185,8 +194,9 @@ describe('controllers', function() {
                     request(server)
                         .get('/order/accept')
                         .set('Accept', 'application/json')
-                        .set('api_key', '1234')
-                        .query({ orderId: newId })
+                        .set('api_key', 'asecretprivatetoken')
+                        .set('username', 'bobjohnson1414')
+                        .query({ orderId: orderId })
                         .expect('Content-Type', /json/)
                         .expect(200)
                         .end(function(err, res) {

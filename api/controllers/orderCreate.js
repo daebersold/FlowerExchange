@@ -38,60 +38,45 @@ var AutoAccept = function(orderToInsert) {
 
 function orderCreate(req, res) {
 
-    // Reqlize that req.account gets set in app when token is verified and account is retrieved.
+
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-    var accountId = req.body.accountId;
+    var orderBody = req.body || 'no order given';
+    var orderDetail = util.format('OrderCreate reqBody: %j!', orderBody);
 
-    var query = {
-        _id: accountId,
-        token: req.account.token
-    };
+    // Create a order in memory
+    var orderToInsert = new Order(orderBody);
 
-    Account.findOne(query, function(err, account) {
-
-        if (!err && account) {
-
-            // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-            var orderBody = req.body || 'no order given';
-            var orderDetail = util.format('OrderCreate reqBody: %j!', orderBody);
-
-            // Create a order in memory
-            var orderToInsert = new Order(orderBody);
-
-            // Set Fields Relative to Creator
-            orderToInsert.originatingAccountId = account._id;
-
-            geoLocation.getCoordsForOrder(req).then(
-                function(geoCodeResult) {
-                    //console.log('OrderCreate.GeoCodeResult: ', geoCodeResult);
-                    orderToInsert.toGeoCode = geoCodeResult.toGeoCode;
-                    orderToInsert.fromGeoCode = geoCodeResult.fromGeoCode;
-                    orderToInsert.toLoc = { type: 'Point', coordinates: [geoCodeResult.toGeoCode[0].longitude, geoCodeResult.toGeoCode[0].latitude] };
-                    orderToInsert.fromLoc = { type: 'Point', coordinates: [geoCodeResult.fromGeoCode[0].longitude, geoCodeResult.fromGeoCode[0].latitude] };
+    // Set Fields Relative to Creator
+    orderToInsert.originatingAccountId = req.account._id;
+    orderToInsert.fullfillmentAccountId = null;
+    geoLocation.getCoordsForOrder(req).then(
+        function(geoCodeResult) {
+            //console.log('OrderCreate.GeoCodeResult: ', geoCodeResult);
+            orderToInsert.toGeoCode = geoCodeResult.toGeoCode;
+            orderToInsert.fromGeoCode = geoCodeResult.fromGeoCode;
+            orderToInsert.toLoc = { type: 'Point', coordinates: [geoCodeResult.toGeoCode[0].longitude, geoCodeResult.toGeoCode[0].latitude] };
+            orderToInsert.fromLoc = { type: 'Point', coordinates: [geoCodeResult.fromGeoCode[0].longitude, geoCodeResult.fromGeoCode[0].latitude] };
 
 
-                    // Remember to create the indexes required.
-                    // db.orders.createIndex( { toLoc : "2dsphere" } )
-                    // db.orders.createIndex( { fromLoc : "2dsphere" } )
-                    // time value:  1985-04-12T23:20:50.52Z
+            // Remember to create the indexes required.
+            // db.orders.createIndex( { toLoc : "2dsphere" } )
+            // db.orders.createIndex( { fromLoc : "2dsphere" } )
+            // time value:  1985-04-12T23:20:50.52Z
 
-                    // Save it to database
-                    orderToInsert.save(function(err) {
-                        if (err) {
-                            console.log(err);
-                            res.json({ message: "Failed to create order." });
-                        } else {
-                            console.log(orderToInsert);
-                            //AutoAccept(orderToInsert);
-                            res.json(orderToInsert.toString());
-                        }
-                    });
-                });
-        } else {
-            console.log(err);
-            res.json({ message: "Failed to lookup account" });
-        }
-    });
+            // Save it to database
+            orderToInsert.save(function(err) {
+                if (err) {
+                    console.log(err);
+                    res.json({ message: "Failed to create order." });
+                } else {
+                    //console.log(orderToInsert);
+                    //AutoAccept(orderToInsert);
+                    var out = { message: "success" };
+                    res.json(out);
+                }
+            });
+        });
+
 }
 
 module.exports = {
