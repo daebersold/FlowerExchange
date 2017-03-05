@@ -47,12 +47,6 @@ paths:
       description: Returns account detail the caller
       # used as the method name of the controller
       operationId: account
-      parameters:
-        - name: accountId
-          in: query
-          description: The accountId assigned to your flower shop operates.
-          required: true
-          type: string
       # responses may fall through to errors
       responses:
         "200":
@@ -64,11 +58,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [],  username: [] } ]
   /accounts:
     x-swagger-router-controller: accounts
     get:
@@ -77,17 +67,6 @@ paths:
       description: Returns accounts list the caller - should only be available to authorized super users.
       # used as the method name of the controller
       operationId: accounts
-      parameters:
-        - name: accountId
-          in: query
-          description: The accountId assigned to your flower shop operates.
-          required: true
-          type: string
-        - name: secretKey
-          in: query
-          description: The secret key for your assigned flower shop.
-          required: true
-          type: string
       # responses may fall through to errors
       responses:
         "200":
@@ -99,11 +78,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /account/create:
     x-swagger-router-controller: accountCreate
     post:
@@ -132,11 +107,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /account/forgotSecretKey:
     x-swagger-router-controller: accountForgotSecretKey
     get:
@@ -164,11 +135,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /account/resetSecretKey:
     x-swagger-router-controller: accountResetSecretKey
     get:
@@ -196,11 +163,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /account/confirmSecretKey:
     x-swagger-router-controller: accountConfirmSecretKey
     get:
@@ -233,11 +196,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /account/update/{id}:
     x-swagger-router-controller: accountUpdate
     put:
@@ -271,11 +230,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /orders:
     x-swagger-router-controller: orders
     get:
@@ -306,11 +261,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /eligibileOrders:
     # binds a128 app logic to a route
     x-swagger-router-controller: eligibileOrders
@@ -326,11 +277,6 @@ paths:
           description: Your account ID
           required: true
           type: string
-        - name: secretKey
-          in: query
-          description: The secret key given to you when you registered
-          required: true
-          type: string
       responses:
         "200":
           description: Success
@@ -342,11 +288,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /order:
     x-swagger-router-controller: order
     get:
@@ -372,6 +314,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+      security: [ { api_key: [], username: [] } ]
   /order/create:
     x-swagger-router-controller: orderCreate
     post:
@@ -398,11 +341,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /order/accept:
     x-swagger-router-controller: orderAccept
     get:
@@ -415,11 +354,6 @@ paths:
         - name: accountId
           in: query
           description: Your account ID
-          required: true
-          type: string
-        - name: secretKey
-          in: query
-          description: The secret key given to you when you registered
           required: true
           type: string
         - name: orderId
@@ -437,11 +371,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-      security:
-        - api_key: []
-        - flowerexchange_auth:
-          - write_account
-          - read_account
+      security: [ { api_key: [], username: [] } ]
   /swagger:
     x-swagger-pipe: swagger_raw
 securityDefinitions:
@@ -449,13 +379,10 @@ securityDefinitions:
     type: apiKey
     name: api_key
     in: header
-  flowerexchange_auth:
-    type: oauth2
-    authorizationUrl: http://flowerexchange.com/api/oauth/dialog
-    flow: implicit
-    scopes:
-      write_account: modify your account details
-      read_account: read your account details
+  username:
+    type: apiKey
+    name: username
+    in: header
 # complex objects have schema definitions
 definitions:
   AccountResponse:
@@ -613,8 +540,6 @@ definitions:
     properties:
       accountId:
         type: string
-      secretKey:
-        type: string
       id:
         type: string
       toFirstName:
@@ -686,6 +611,10 @@ definitions:
   Account:
     type: object
     properties:
+      username:
+        type: string
+        description: Username on account
+        title: Name
       name:
         type: string
         description: Name on account

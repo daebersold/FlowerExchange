@@ -41,13 +41,12 @@ function orderCreate(req, res) {
     // Reqlize that req.account gets set in app when token is verified and account is retrieved.
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
     var accountId = req.body.accountId;
-    var secretKey = req.body.secretKey;
 
     var query = {
         _id: accountId,
-        token: secretKey,
+        token: req.account.token
     };
-    console.log('query', query);
+
     Account.findOne(query, function(err, account) {
 
         if (!err && account) {

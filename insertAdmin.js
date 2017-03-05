@@ -4,7 +4,8 @@
 use flower-exchange
 
 db.accounts.insert({
-    "token": "asdf",
+    "username":"bobjohnson1414",
+    "token": "asecretprivatetoken",
     "resetToken": "",
     "resetTokenDate": ISODate("2016-11-16T05:17:40.370Z"),
     "resetTokenTimeout": "",

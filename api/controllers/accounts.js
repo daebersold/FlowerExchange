@@ -10,32 +10,20 @@ module.exports = {
 function accounts(req, res) {
     // Reqlize that req.account gets set in app when token is verified and account is retrieved.
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-    var accountId = req.swagger.params.accountId.value;
-    var secretKey = req.swagger.params.secretKey.value;
 
-    var query = {
-        _id: accountId,
-        token: secretKey,
-    };
+    if (req.account.isSuperUser !== true) {
+        console.log("Error: account not authorized: ", req.account.username);
+        res.json({ message: "Error: account not authorized." });
+    }
 
-    Account.findOne(query, function(err, account) {
+    // Get all the accounts
+    var query = {};
 
-        if (!err && account.isSuperUser) {
-
-            // Get all the accounts
-            var query = {};
-
-            //console.log("Executing Query: ", query);
-
-            /* GET /orders listing. */
-            Account.find(query, function(err, accountList) {
-                if (err) return console.log(err);
-                //console.log("Found these accounts:", accountList);
-                res.json(accountList);
-            });
-        } else {
-            console.log("Error: account not authorized.", account);
-            res.json({ message: "Error: account not authorized." });
-        }
+    /* GET /accounts listing. */
+    Account.find(query, function(err, accountList) {
+        if (err) return console.log(err);
+        res.json(accountList);
     });
+
+
 }

@@ -8,8 +8,10 @@ function accountUpdate(req, res) {
 
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
     var accountBody = req.body || 'no account given';
+    var accountDetail = util.format('AccountUpdate reqBody: %j!', accountBody);
 
-    var accountId = req.account._id
+    var accountId = req.swagger.params.id.value;
+    // Update account in memory
     var accountToUpdate = new Account(accountBody);
     accountToUpdate._id = accountId;
 

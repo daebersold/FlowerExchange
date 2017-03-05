@@ -15,12 +15,13 @@ function eligibileOrders(req, res) {
 
     var query = {
         _id: mongoose.Types.ObjectId(accountId),
-        token: secretKey,
+        token: req.account.token
     };
 
     Account.findOne(query, function(err, account) {
 
         if (!err && account) {
+
             // If no radius is given, then default to 30 miles.
             var radius = account.defaultMileRadiusForAutoAcceptReject || 0;
             radius = radius * 1609.34;
