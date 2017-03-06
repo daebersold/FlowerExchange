@@ -4,18 +4,18 @@ var util = require('util');
 var Order = require('../models/Order.js');
 var GeoLocation = require("../helpers/geoLocation.js");
 
-module.exports = {
-    orders: orders
-};
-
-function orders(req, res) {
+function ordersFilled(req, res) {
 
     // Look it up!
-    var query = { $or: [{ originatingAccountId: req.account._id }, { fullfillmentAccountId: req.account._id }] };
+    var query = { fullfillmentAccountId: req.account._id };
 
-    /* GET /orders listing. */
+    /* GET /ordersFilled listing. */
     Order.find(query, function(err, ordersList) {
         if (err) return console.log(err);
         res.json(ordersList);
     });
 }
+
+module.exports = {
+    ordersFilled: ordersFilled
+};

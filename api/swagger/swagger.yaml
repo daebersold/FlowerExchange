@@ -231,20 +231,29 @@ paths:
     get:
       tags:
         - orders
-      description: Returns list of 'Orders' to the caller
+      description: Returns list of 'Orders' that you have accepted.
       # used as the method name of the controller
       operationId: orders
-      parameters:
-        - name: zipCode
-          in: query
-          description: The zip code in which your flower shop operates.
-          required: false
-          type: string
-        - name: radius
-          in: query
-          description: The number of miles in radius in which your flower shop is willing to deliver.
-          required: false
-          type: number
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/OrdersResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security: [ { api_key: [], username: [] } ]
+  /ordersCreated:
+    x-swagger-router-controller: ordersCreated
+    get:
+      tags:
+        - orders
+      description: Returns list of 'Orders' that you have accepted.
+      # used as the method name of the controller
+      operationId: ordersCreated
       responses:
         "200":
           description: Success
@@ -266,12 +275,6 @@ paths:
       description: Returns list of 'Orders' to the caller based on given Account
       # used as the method name of the controller
       operationId: eligibileOrders
-      parameters:
-        - name: accountId
-          in: query
-          description: Your account ID
-          required: true
-          type: string
       responses:
         "200":
           description: Success
@@ -346,11 +349,6 @@ paths:
       # used as the method name of the controller
       operationId: orderAccept
       parameters:
-        - name: accountId
-          in: query
-          description: Your account ID
-          required: true
-          type: string
         - name: orderId
           in: query
           description: The orderId of the order in which details accepted

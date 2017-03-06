@@ -8,13 +8,7 @@ var mongoose = require('mongoose');
 
 function eligibileOrders(req, res) {
 
-    // Reqlize that req.account gets set in app when token is verified and account is retrieved.
-    // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-    var accountId = req.swagger.params.accountId.value;
-    var secretKey = req.swagger.params.secretKey.value;
-
-
-    if (!err && req.account) {
+    if (req.account) {
 
         // If no radius is given, then default to 30 miles.
         var radius = req.account.defaultMileRadiusForAutoAcceptReject || 0;
@@ -32,7 +26,7 @@ function eligibileOrders(req, res) {
 
                 // Look it up!
                 var query = {
-                    fullfillmentAccountId: { $exists: false },
+                    fullfillmentAccountId: null,
                     toLoc: { $near: { $geometry: { type: 'Point', coordinates: lookupCoords }, $maxDistance: radius } }
                 };
 
