@@ -14,7 +14,7 @@ info:
 
     [Learn about FlowerExchange](http://flowers-flowers.com) or join the Facebook Page 'flower-exchange'.
 
-    For this sample, you can use the api key `1234` to test the authorization filters.
+    For this sample, you can use the security api_key `changeme` and username `admin` to test the authorization filters.
   contact:
     name: davidaebersold+FlowerExchange@gmail.com
   license:
@@ -206,7 +206,6 @@ paths:
       operationId: accountUpdate
       produces:
         - application/json
-        - application/xml
       parameters:
         - name: account
           in: body
@@ -380,8 +379,11 @@ securityDefinitions:
 definitions:
   AccountResponse:
     required:
+      - result
       - message
     properties:
+      result:
+        type: boolean
       message:
         type: string
   AccountsResponse:

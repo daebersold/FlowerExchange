@@ -22,8 +22,6 @@ function orderAccept(req, res) {
                 order.fullfillmentAccountId = req.account._id;
                 order.dateModified = Date.now();
 
-                //db.orders.update({originatingAccountId:3424},{$set:{originatingAccountId: ObjectId("582bec6dcac4e18614b7b1b0")}},{ multi: true })
-
                 // Save it to database
                 order.save(function(err) {
                     if (!err) {

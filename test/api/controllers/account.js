@@ -4,6 +4,7 @@
 var should = require('should');
 var request = require('supertest');
 var server = require('../../../app');
+var Account = require('../../../api/models/Account.js');
 
 // Generate a v4 UUID (random) 
 var idgen = require('idgen');
@@ -118,6 +119,7 @@ describe('controllers', function() {
         });
 
         describe('PUT /account/update/', function() {
+
             it('should update an account', function(done) {
 
                 var account = {
@@ -136,13 +138,10 @@ describe('controllers', function() {
                 };
 
                 request(server)
-                    .put('/account/update/582bebf42150364e146fa538')
-                    .set('api_key', token)
-                    .set('username', 'bigbubba33')
+                    .put('/account/update')
+                    .set('api_key', 'asecretprivatetoken')
+                    .set('username', 'bobjohnson1414')
                     .set('Accept', 'application/json')
-                    .query({
-                        'id': '582bebf42150364e146fa538'
-                    })
                     .send(account)
                     .expect('Content-Type', /json/)
                     .expect(200)

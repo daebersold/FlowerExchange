@@ -37,6 +37,12 @@ To run the webAPI:
 > swagger project start flower-exchange
 ```
 
+## Test
+To test:
+```
+> npm test coverage
+'''
+
 ## Built With
 * [nodeJs](https://nodejs.org) - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine
 * [Swagger](http://swagger.io/) - World's Most Popular Framework for APIs - Open webAPI standards

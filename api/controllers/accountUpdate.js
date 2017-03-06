@@ -9,7 +9,7 @@ function accountUpdate(req, res) {
     // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
     var accountBody = req.body || 'no account given';
 
-    var accountId = req.account._id
+    var accountId = req.account._id;
     var accountToUpdate = new Account(accountBody);
     accountToUpdate._id = accountId;
 
@@ -52,7 +52,7 @@ function accountUpdate(req, res) {
                     // Save it to database
                     account.save(function(err) {
                         if (!err) {
-                            res.json(account.toString());
+                            res.json({ result: true, message: "successfully updated account" });
                         } else {
                             console.log("Error: could not save account ", account);
                             res.json({ result: err });
